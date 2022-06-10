@@ -1,0 +1,1 @@
+./rm-containers.sh && ./rm-images.sh && ./build-image.sh
