@@ -1,6 +1,6 @@
 # Installing `cardano-node` and `cardano-cli` using Docker container
 ## Overview
-This guide will show you how to compile and install the cardano-node and cardano-cli using Docker container, directly from the source-code
+This guide will show you how to compile and install the `cardano-node` and `cardano-cli` using Docker container, directly from the source-code
 
 ## Install Docker Engine Ubuntu
 https://docs.docker.com/engine/install/ubuntu/
@@ -30,7 +30,7 @@ or
 
 ## Running container
 You can run a container in from the new cardano-node image.
-The dockerfile has an `ENTRYPOINT` to run the cardano-node as soon as you run the container
+The `dockerfile` has an `ENTRYPOINT` to run the cardano-node as soon as you run the container
 * Run container in detached mode with `-v`
 * Run container attaching storage between host and container `cardano-node-db:/root/node/db`
 ```
@@ -82,13 +82,13 @@ root@ee67eac03bec:/# cardano-cli query tip --testnet-magic $TESNET_NETWORK_MAGIC
 ```
 
 ## Removing containers
-You can remove all the containers by running the below script, and this will only remove the stopped containers
+You can remove all the containers with the below script, and this will only remove the stopped containers
 ```
 ./rm-containers.sh
 ```
 
 ## Removing images
-You can remove all the images bu running the below script, and this will only remove the images that are not attached to containers
+You can remove all the images with the below script, and this will only remove the images that are not attached to containers
 ```
 ./rm-images.sh
 ```
