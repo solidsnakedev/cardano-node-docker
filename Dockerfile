@@ -91,4 +91,4 @@ RUN /bin/bash -c "chmod +x /root/.local/bin/cardano-cli-tip.sh"
 
 ENV TESNET_NETWORK_MAGIC=1097911063
 
-CMD [ "/root/.local/bin/start-cardano-node.sh" ]
+CMD [ "/root/.local/bin/cardano-node-start.sh" ]
