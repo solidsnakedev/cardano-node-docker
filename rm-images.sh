@@ -1,6 +1,10 @@
-if [ -z $(docker images -q)]
+if [[ -z $(docker images -q --filter "dangling=true") ]]
 then
     echo "Nothing to delete"
 else
-    docker rmi $(docker images -q)
+    echo "Listing images"
+    docker images -q
+    echo -e "\n"
+    echo "Deleting images"
+    docker rmi $(docker images -q --filter "dangling=true")
 fi
