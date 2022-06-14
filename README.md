@@ -65,6 +65,7 @@ root@ee67eac03bec:/#
 
 ### Interacting with Cardano node
 Once you're inside the container you can interact with `cardano-node` and `cardano-cli`
+The variable `$TESNET_NETWORK_MAGIC` is set in `Dockerfile`
 ```
 cardano-cli query tip --testnet-magic $TESNET_NETWORK_MAGIC
 ```
