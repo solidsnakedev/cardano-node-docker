@@ -28,7 +28,7 @@ or
 ./build-image.sh
 ```
 
-## Running container
+## Running container :smiley:
 You can run a container in from the new cardano-node image.
 The `dockerfile` has an `ENTRYPOINT` to run the cardano-node as soon as you run the container
 * Run container in detached mode with `-v`
@@ -64,8 +64,9 @@ root@ee67eac03bec:/#
 ```
 
 ### Interacting with Cardano node
-Once you're inside the container you can interact with `cardano-node` and `cardano-cli`
-The variable `$TESNET_NETWORK_MAGIC` is set in `Dockerfile`
+Once you're inside the container you can interact with `cardano-node` and `cardano-cli`.
+
+*Note: The variable `$TESNET_NETWORK_MAGIC` is set in `Dockerfile`*
 ```
 cardano-cli query tip --testnet-magic $TESNET_NETWORK_MAGIC
 ```
