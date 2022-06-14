@@ -1,10 +1,15 @@
-# cardano-node-docker
+# Cardano node with Docker Containers
 
 ## Creating docker volume
-the purpose of this volume is to share a persistent storage the cardano database between the host and the container
-this folder is nomally stored in '/var/lib/docker/volumes/cardano-node-db/_data'
+The purpose of this volume is to share a persistent storage between the host and the container.
+This folder is nomally stored in `/var/lib/docker/volumes/cardano-node-db/_data`
 ```
 docker volume create cardano-node-db
+```
+
+## Give executable permissions to scripts
+```
+chmod +x build-image.sh run-container.sh rm-*
 ```
 
 ## Building image
@@ -24,7 +29,7 @@ You can run a container in from the new cardano-node image.
 * -v -> detached mode
 * cardabi-node-db:/root/node/db -> cardano-node-db attached to /root/node/db
 ```
-./run-containers.sh
+./run-container.sh
 ```
 or
 
@@ -43,4 +48,16 @@ Access the container
 docker exec -it #### bash
 ```
 
+
+## Removing containers
+This will only remove the stopped containers
+```
+./rm-containers.sh
+```
+
+## Removing images
+This will only remove the images that are not attached to containers
+```
+./rm-images.sh
+```
 
