@@ -1,7 +1,12 @@
-# Cardano node - Docker container
+# Installing cardano-node and cardano-cli using Docker container
+## Overview
+This guide will show you how to compile and install the cardano-node and cardano-cli using Docker container, directly from the source-code
+
+## Install Docker Engine Ubuntu
+https://docs.docker.com/engine/install/ubuntu/
 
 ## Creating docker volume
-### The purpose of this volume is to share a persistent storage between the host and the container.
+The purpose of this volume is to share a persistent storage between the host and the container.
 This folder is nomally stored in `/var/lib/docker/volumes/cardano-node-db/_data`
 ```
 docker volume create cardano-node-db
@@ -13,31 +18,31 @@ chmod +x build-image.sh run-container.sh rm-*
 ```
 
 ## Building image
-### You can build the image using the script build-image.sh, the image size is ~10 GB
-```
-./build-image.sh
-```
-or
+You can build the image using the script `build-image.sh`, the image size is ~10 GB
 
 ```
 docker build -t cardano-node .
 ```
+or
+```
+./build-image.sh
+```
 
 ## Running container
-### You can run a container in from the new cardano-node image.
+You can run a container in from the new cardano-node image.
+The dockerfile has an `ENTRYPOINT` to run the cardano-node as soon as you run the container
 * Run container in detached mode with `-v`
 * Run container attaching storage between host and container `cardano-node-db:/root/node/db`
 ```
-./run-container.sh
+docker run -d -v cardano-node-db:/root/node/db cardano-node
 ```
 or
-
 ```
-docker run -d -v cardano-node-db:/root/node/db cardano-node
+./run-container.sh
 ```
 
 ## Acces to container
-### Get running containers
+Fist we need to list the running containers
 ```
 docker ps
 ```
@@ -48,9 +53,9 @@ CONTAINER ID   IMAGE          COMMAND                  CREATED        STATUS    
 ee67eac03bec   cardano-node   "/root/.local/bin/st…"   13 hours ago   Up 13 hours             awesome_gagarin
 ```
 
-### Access the container
+Now you can access the container, in this example `awesome_gagarin`
 ```
-docker exec -it #### bash
+docker exec -it awesome_gagarin bash
 ```
 ```
 Example
@@ -59,7 +64,7 @@ root@ee67eac03bec:/#
 ```
 
 ### Interacting with Cardano node
-Once inside the container you can interact with cardano node
+Once you're inside the container you can interact with `cardano-node` and `cardano-cli`
 ```
 cardano-cli query tip --testnet-magic $TESNET_NETWORK_MAGIC
 ```
@@ -77,13 +82,13 @@ root@ee67eac03bec:/# cardano-cli query tip --testnet-magic $TESNET_NETWORK_MAGIC
 ```
 
 ## Removing containers
-### This will only remove the stopped containers
+You can remove all the containers by running the below script, and this will only remove the stopped containers
 ```
 ./rm-containers.sh
 ```
 
 ## Removing images
-### This will only remove the images that are not attached to containers
+You can remove all the images bu running the below script, and this will only remove the images that are not attached to containers
 ```
 ./rm-images.sh
 ```
