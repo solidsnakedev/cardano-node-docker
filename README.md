@@ -58,6 +58,24 @@ Example
 root@ee67eac03bec:/# 
 ```
 
+### Interacting with Cardano node
+Once inside the container you can interact with cardano node
+```
+cardano-cli query tip --testnet-magic $TESNET_NETWORK_MAGIC
+```
+```
+Example 
+root@ee67eac03bec:/# cardano-cli query tip --testnet-magic $TESNET_NETWORK_MAGIC 
+{
+    "era": "Alonzo",
+    "syncProgress": "100.00",
+    "hash": "425cad2cb7e724ac0b6899b30a63dc7c7c0a2b53d6a043b950e16c2f30a2e753",
+    "epoch": 211,
+    "slot": 60843409,
+    "block": 3630484
+}
+```
+
 ## Removing containers
 ### This will only remove the stopped containers
 ```
