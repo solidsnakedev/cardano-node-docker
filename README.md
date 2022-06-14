@@ -1,7 +1,7 @@
-# Cardano node with Docker Containers
+# Cardano node - Docker container
 
 ## Creating docker volume
-The purpose of this volume is to share a persistent storage between the host and the container.
+### The purpose of this volume is to share a persistent storage between the host and the container.
 This folder is nomally stored in `/var/lib/docker/volumes/cardano-node-db/_data`
 ```
 docker volume create cardano-node-db
@@ -13,7 +13,7 @@ chmod +x build-image.sh run-container.sh rm-*
 ```
 
 ## Building image
-You can build the image using the script build-image.sh, the image size is ~10 GB
+### You can build the image using the script build-image.sh, the image size is ~10 GB
 ```
 ./build-image.sh
 ```
@@ -24,7 +24,7 @@ docker build -t cardano-node .
 ```
 
 ## Running container
-You can run a container in from the new cardano-node image.
+### You can run a container in from the new cardano-node image.
 * Run container in detached mode with `-v`
 * Run container attaching storage between host and container `cardano-node-db:/root/node/db`
 ```
@@ -37,7 +37,7 @@ docker run -d -v cardano-node-db:/root/node/db cardano-node
 ```
 
 ## Acces to container
-Get running containers
+### Get running containers
 ```
 docker ps
 ```
@@ -48,19 +48,24 @@ CONTAINER ID   IMAGE          COMMAND                  CREATED        STATUS    
 ee67eac03bec   cardano-node   "/root/.local/bin/st…"   13 hours ago   Up 13 hours             awesome_gagarin
 ```
 
-Access the container
+### Access the container
 ```
 docker exec -it #### bash
 ```
+```
+Example
+❯  docker exec -it awesome_gagarin bash
+root@ee67eac03bec:/# 
+```
 
 ## Removing containers
-This will only remove the stopped containers
+### This will only remove the stopped containers
 ```
 ./rm-containers.sh
 ```
 
 ## Removing images
-This will only remove the images that are not attached to containers
+### This will only remove the images that are not attached to containers
 ```
 ./rm-images.sh
 ```
