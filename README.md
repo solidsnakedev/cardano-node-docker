@@ -81,6 +81,14 @@ root@ee67eac03bec:/# cardano-cli query tip --testnet-magic $TESNET_NETWORK_MAGIC
 }
 ```
 
+### Exiting the container
+You can exit the container typing `exit`
+```
+Example
+root@ee67eac03bec:/# exit
+exit
+```
+
 ## Removing containers
 You can remove all the containers with the below script, and this will only remove the stopped containers
 ```
