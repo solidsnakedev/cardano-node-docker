@@ -11,7 +11,7 @@ docker volume create cardano-node-db
 You can build the image using the script build-image.sh, the image size is ~10 GB
 ```
 ./build-image.sh
-``
+```
 or
 
 ```
@@ -26,11 +26,21 @@ You can run a container in from the new cardano-node image.
 ```
 ./run-containers.sh
 ```
-
 or
 
 ```
 docker run -d -v cardano-node-db:/root/node/db cardano-node
+```
+
+## Acces to container
+Get running containers
+```
+docker ps
+```
+
+Access the container
+```
+docker exec -it #### bash
 ```
 
 
