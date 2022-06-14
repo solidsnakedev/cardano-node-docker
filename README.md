@@ -1,4 +1,4 @@
-# Installing cardano-node and cardano-cli using Docker container
+# Installing `cardano-node` and `cardano-cli` using Docker container
 ## Overview
 This guide will show you how to compile and install the cardano-node and cardano-cli using Docker container, directly from the source-code
 
