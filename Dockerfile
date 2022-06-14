@@ -73,6 +73,12 @@ RUN export URL_CONFIG_FILES=$(curl -s https://api.github.com/repos/input-output-
     wget -P $HOME/node $URL_CONFIG_FILES/testnet-alonzo-genesis.json && \
     wget -P $HOME/node $URL_CONFIG_FILES/testnet-topology.json
 
+# Change config to save them in /root/node/log/node.log file instead of stdout
+RUN sed -i 's/StdoutSK/FileSK/' $HOME/node/testnet-config.json
+RUN sed -i 's/stdout/\/root\/node\/logs\/node.log/' $HOME/node/testnet-config.json
+
+
+
 # Set node socket for cardano-cli
 ENV CARDANO_NODE_SOCKET_PATH="/root/node/db/node.socket"
 
