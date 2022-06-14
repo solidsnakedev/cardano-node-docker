@@ -86,6 +86,9 @@ ENV CARDANO_NODE_SOCKET_PATH="/root/node/db/node.socket"
 COPY start-cardano-node.sh /root/.local/bin
 RUN /bin/bash -c "chmod +x /root/.local/bin/start-cardano-node.sh"
 
+COPY cardano-cli-tip.sh /root/.local/bin
+RUN /bin/bash -c "chmod +x /root/.local/bin/cardano-cli-tip.sh"
+
 ENV TESNET_NETWORK_MAGIC=1097911063
 
-ENTRYPOINT [ "/root/.local/bin/start-cardano-node.sh" ]
+CMD [ "/root/.local/bin/start-cardano-node.sh" ]

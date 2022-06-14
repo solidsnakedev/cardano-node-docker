@@ -1,0 +1,1 @@
+docker run --rm -it -v cardano-node-db:/root/node/db cardano-node /root/.local/bin/cardano-cli query tip --testnet-magic 1097911063
