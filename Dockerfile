@@ -83,8 +83,8 @@ RUN sed -i 's/stdout/\/root\/node\/logs\/node.log/' $HOME/node/testnet-config.js
 ENV CARDANO_NODE_SOCKET_PATH="/root/node/db/node.socket"
 
 # Copy script to run node automatically
-COPY start-cardano-node.sh /root/.local/bin
-RUN /bin/bash -c "chmod +x /root/.local/bin/start-cardano-node.sh"
+COPY cardano-node-start.sh /root/.local/bin
+RUN /bin/bash -c "chmod +x /root/.local/bin/cardano-node-start.sh"
 
 COPY cardano-cli-tip.sh /root/.local/bin
 RUN /bin/bash -c "chmod +x /root/.local/bin/cardano-cli-tip.sh"
