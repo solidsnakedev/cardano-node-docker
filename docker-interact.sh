@@ -5,6 +5,6 @@ then
     echo -e "\nPlease insert container name!!"
     docker ps -q
 else 
-    echo -e "\nInteractive with container $1\n"
+    echo -e "\nInside container $1\n"
     docker exec -it $1 bash
 fi
