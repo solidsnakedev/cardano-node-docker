@@ -78,7 +78,7 @@ git rev 73f9a746362695dc2cb63ba757fbcabb81733d23
     "block": 3631266
 }
 ```
-## Creating session in container
+## Creating bash session in container
 Fist we need to list the running containers
 ```
 docker ps
