@@ -78,7 +78,7 @@ git rev 73f9a746362695dc2cb63ba757fbcabb81733d23
     "block": 3631266
 }
 ```
-## Acces to container
+## Creating session in container
 Fist we need to list the running containers
 ```
 docker ps
@@ -104,7 +104,7 @@ Example
 root@ee67eac03bec:/# 
 ```
 
-### Interacting with Cardano node
+### Inside cardano-node container
 Once you're inside the container you can run `cardano-node` or `cardano-cli` commands.
 
 *Note: The environment variable `$TESNET_NETWORK_MAGIC` is set in `Dockerfile`*
@@ -125,7 +125,7 @@ root@ee67eac03bec:/# cardano-cli query tip --testnet-magic $TESNET_NETWORK_MAGIC
 ```
 or
 ```
-./docker-interact.sh
+cardano-cli-tip.sh 
 ```
 
 ### Exiting the container
@@ -137,7 +137,7 @@ exit
 ```
 
 ## Removing containers
-You can remove all the containers with the below script, and this will only remove the exited containers
+You can remove all the containers with the below script, and this will only remove containers with exited status
 ```
 ./docker-rm-containers.sh
 ```
