@@ -55,6 +55,7 @@ RUN export TAG=$(curl -s https://api.github.com/repos/input-output-hk/cardano-no
 RUN echo "package cardano-crypto-praos" >>  ${HOME}/cardano-node/cabal.project.local && \
     echo "flags: -external-libsodium-vrf" >>  ${HOME}/cardano-node/cabal.project.local
 
+# Build cardano-node & cardano-cli
 RUN cd ${HOME}/cardano-node && \
     /bin/bash -c 'cabal build all'
 
@@ -62,6 +63,7 @@ RUN cd ${HOME}/cardano-node && \
 RUN cp $(find ${HOME}/cardano-node/dist-newstyle/build -type f -name "cardano-cli") ${HOME}/.local/bin/cardano-cli
 RUN cp $(find ${HOME}/cardano-node/dist-newstyle/build -type f -name "cardano-node") ${HOME}/.local/bin/cardano-node
 
+# Get latest config files from IOHK github api
 RUN export URL_CONFIG_FILES=$(curl -s https://api.github.com/repos/input-output-hk/cardano-node/releases/latest | jq -r .body | grep 'Configuration files' | sed 's/\(- \[Configuration files\]\)//' | tr -d '()\r' | sed 's/\/index\.html//') && \
     echo $URL_CONFIG_FILES && \
     wget -P ${HOME}/node $URL_CONFIG_FILES/testnet-config.json && \
@@ -74,7 +76,7 @@ RUN export URL_CONFIG_FILES=$(curl -s https://api.github.com/repos/input-output-
 RUN sed -i 's/StdoutSK/FileSK/' ${HOME}/node/testnet-config.json
 RUN sed -i 's/stdout/\/root\/node\/logs\/node.log/' ${HOME}/node/testnet-config.json
 
-# Set node socket for cardano-cli
+# Set node socket for cardano-cli in evironment
 ENV CARDANO_NODE_SOCKET_PATH="/root/node/db/node.socket"
 
 # Create keys folder
@@ -84,8 +86,11 @@ RUN mkdir -p ${HOME}/node/keys
 COPY cardano-node-start.sh /root/.local/bin
 COPY cardano-cli-*.sh /root/.local/bin/
 
+# Set executable permits
 RUN /bin/bash -c "chmod +x /root/.local/bin/cardano-*.sh"
 
+# Set testnet magic number
 ENV TESNET_NETWORK_MAGIC=1097911063
 
+# Run cardano-node at the startup
 CMD [ "/root/.local/bin/cardano-node-start.sh" ]
