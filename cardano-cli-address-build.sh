@@ -1,13 +1,19 @@
 echo -e "\nVerification keys found"
 ls ${HOME}/node/keys/*.vkey
+
 echo -e "\nInsert verification key name (example payment1): "
 read key
-if [[ -e ${HOME}/node/keys/$key.vkey ]]
+
+echo -e "\nInsert verification stake key name (example stake1): "
+read stake
+
+if [[ -e ${HOME}/node/keys/${key}.vkey && -e ${HOME}/node/keys/${stake}.vkey ]]
 then
     echo -e "\nCreating/Deriving cardano address from verification key"
     cardano-cli address build \
-    --payment-verification-key-file ${HOME}/node/keys/$key.vkey \
-    --out-file ${HOME}/node/keys/$key.addr \
+    --payment-verification-key-file ${HOME}/node/keys/${key}.vkey \
+    --stake-verification-key-file ${HOME}/node/keys/${stake}.vkey \
+    --out-file ${HOME}/node/keys/${key}.addr \
     --testnet-magic $TESNET_NETWORK_MAGIC
     echo -e "\nCardano address created"
     ls ${HOME}/node/keys/$key.addr
