@@ -40,7 +40,7 @@ ENV CARDANO_NODE_SOCKET_PATH="/root/node/db/node.socket"
 COPY bin /root/.local/bin
 
 # Copy scripts
-COPY cardano-node-start.sh /root/.local/bin
+COPY cardano-node-run.sh /root/.local/bin
 COPY cardano-cli-*.sh /root/.local/bin/
 
 # Set executable permits
@@ -50,4 +50,4 @@ RUN /bin/bash -c "chmod +x /root/.local/bin/cardano-*.sh"
 ENV TESNET_NETWORK_MAGIC=1097911063
 
 # Run cardano-node at the startup
-CMD [ "/root/.local/bin/cardano-node-start.sh" ]
+CMD [ "/root/.local/bin/cardano-node-run.sh" ]
