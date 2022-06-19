@@ -19,24 +19,20 @@ chmod +x docker-*
 
 ## Building image
 You can build the image using the script `docker-build-image.sh`, the image size is ~10 GB
+- then select
+* `Dockerfile.build` (build cardano-node from source, and set configurations to run the node)
+* `Dockerfile.dev`   (this copy the binaries from the host and set configurations to run the node)
 
-```
-docker build -t cardano-node .
-```
-or
 ```
 ./docker-build-image.sh
 ```
 
 ## Running container :smiley:
-You can run a container in from the new cardano-node image.
+You can run a container from the new cardano-node image.
 The `Dockerfile` has an `CMD` to run the cardano-node as soon as you run the container
 * Run container in detached mode with `-d`
 * Run container binding storage between host and container `-v cardano-node-db:/root/node/db`
-```
-docker run -d -v cardano-node-db:/root/node/db cardano-node
-```
-or
+
 ```
 ./docker-run-container.sh
 ```
