@@ -86,7 +86,7 @@ CONTAINER ID   IMAGE          COMMAND                  CREATED        STATUS    
 ee67eac03bec   cardano-node   "/root/.local/bin/st…"   13 hours ago   Up 13 hours             awesome_gagarin
 ```
 
-Now you can access the container, in this example `awesome_gagarin`
+Now you can access the container (example `awesome_gagarin`)
 ```
 docker exec -it awesome_gagarin bash
 ```
