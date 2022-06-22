@@ -5,4 +5,9 @@
 docker images
 echo -e "\n- Enter Dockerfile image name to run container : "
 read dockerimage
-docker run -d -v cardano-node-db:/root/node/db ${dockerimage}
+docker run -d \
+    -v ${PWD}/db/:/node/db \
+    -v ${PWD}/logs/:/node/logs \
+    -v ${PWD}/ipc/:/node/ipc \
+    -v ${PWD}/keys/:/node/keys \
+    ${dockerimage}

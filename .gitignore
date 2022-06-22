@@ -1,3 +1,5 @@
+backups
 db
-bin
+ipc
 keys
+logs

@@ -1,1 +1,0 @@
-cardano-cli query tip --testnet-magic $TESNET_NETWORK_MAGIC

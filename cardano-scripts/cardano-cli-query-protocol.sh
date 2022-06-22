@@ -1,6 +1,6 @@
 echo -e "\nQueryng protocol parameters ..."
 cardano-cli query protocol-parameters \
-  --testnet-magic $TESNET_NETWORK_MAGIC \
-  --out-file ${HOME}/node/protocol.json
+  --testnet-magic $TESNET_MAGIC \
+  --out-file /node/protocol.json
 echo -e "protocol.json saved in : \n"
-ls ${HOME}/node/protocol.json
+ls /node/protocol.json
