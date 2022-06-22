@@ -37,7 +37,7 @@ The `Dockerfile` has an `CMD` to run the cardano-node as soon as you run the con
 ```
 ./docker-cardano-cli-stats.sh
 ```
-### 6.1 Example
+Example
 ```
 ❯  ./docker-cardano-cli-stats.sh 
 
@@ -86,22 +86,17 @@ ee67eac03bec   cardano-node   "/root/.local/bin/st…"   13 hours ago   Up 13 ho
 ```
 ./docker-interact.sh awesome_gagarin
 ```
-Example
-```
-❯  docker exec -it awesome_gagarin bash
-root@ee67eac03bec:/# 
-```
 
 ### 7.2 Inside cardano-node container
 Once you're inside the container you can run `cardano-node` or `cardano-cli` commands.
 
-*Note: The environment variable `$TESNET_NETWORK_MAGIC` is set in `Dockerfile`*
+*Note: The environment variable `$TESNET_MAGIC` is set in `Dockerfile`*
 ```
 cardano-cli-tip.sh 
 ```
 Example
 ```
-root@ee67eac03bec:/# cardano-cli query tip --testnet-magic $TESNET_NETWORK_MAGIC 
+root@ee67eac03bec:/# cardano-cli-tip.sh 
 {
     "era": "Alonzo",
     "syncProgress": "100.00",
