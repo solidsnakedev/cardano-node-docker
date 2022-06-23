@@ -1,4 +1,4 @@
-FROM ubuntu:rolling
+FROM ubuntu:rolling AS builder
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install ubuntu dependencies
@@ -20,27 +20,21 @@ RUN cd src && \
     make && \
     make install
 
-# Install GHC version 8.10.4
-RUN cd src && \
-    wget -O ghc.tar.xz https://downloads.haskell.org/~ghc/8.10.4/ghc-8.10.4-x86_64-deb9-linux.tar.xz && \
-    tar -xf ghc.tar.xz && \
-    rm ghc.tar.xz && \
-    cd ghc-8.10.4 && \
-    ./configure && \
-    make install
-
-# Install Cabal
-RUN wget -O cabal.tar.xz https://downloads.haskell.org/~cabal/cabal-install-3.4.0.0/cabal-install-3.4.0.0-x86_64-ubuntu-16.04.tar.xz && \
-    tar -xf cabal.tar.xz && \
-    rm  cabal.tar.xz && \
-    mv cabal /bin
+# Install GHC version 8.10.4 and Cabal
+RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_MINIMAL=1 sh
+ENV PATH="/root/.ghcup/bin:${PATH}"
+RUN ghcup upgrade && \
+    ghcup install cabal 3.4.0.0 && \
+    ghcup set cabal 3.4.0.0 && \
+    ghcup install ghc 8.10.4 && \
+    ghcup set ghc 8.10.4
 
 # Update PATH
 ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 ENV PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 
 # Update Cabal
-RUN /bin/bash -c "cabal update"
+RUN cabal update
 
 # Clone Cardano Node and checkout to latest version
 RUN export TAG=$(curl -s https://api.github.com/repos/input-output-hk/cardano-node/releases/latest | jq -r .tag_name) && \
@@ -58,30 +52,55 @@ RUN echo "package cardano-crypto-praos" >>  /src/cardano-node/cabal.project.loca
 
 # Build cardano-node & cardano-cli
 RUN cd src/cardano-node && \
-    /bin/bash -c 'cabal build all'
+    cabal build all
 
 # Find and copy binaries to ~/.local/bin
 RUN cp $(find /src/cardano-node/dist-newstyle/build -type f -name "cardano-cli") /bin/cardano-cli
 RUN cp $(find /src/cardano-node/dist-newstyle/build -type f -name "cardano-node") /bin/cardano-node
 
-RUN rm -r src
+
+FROM ubuntu:rolling
+
+COPY --from=builder /bin/cardano-cli /bin
+COPY --from=builder /bin/cardano-node /bin
+
+# Install ubuntu dependencies
+RUN apt-get update -y && \
+    apt-get install git jq bc make automake rsync htop curl build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ wget libncursesw5 libtool autoconf -y
+
+#Install libsodium
+RUN mkdir src && \
+    cd src && \
+    git clone https://github.com/input-output-hk/libsodium && \
+    cd libsodium && \
+    git checkout 66f017f1 && \
+    ./autogen.sh && \
+    ./configure && \
+    make && \
+    make install && \
+    rm -r \src
+
+# Update PATH
+ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+ENV PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 
 # Get latest config files from IOHK github api
-RUN export URL_CONFIG_FILES=$(curl -s https://api.github.com/repos/input-output-hk/cardano-node/releases/latest | jq -r .body | grep 'Configuration files' | sed 's/\(- \[Configuration files\]\)//' | tr -d '()\r' | sed 's/\/index\.html//') && \
-    echo $URL_CONFIG_FILES && \
-    wget -P /node/configuration \
-    $URL_CONFIG_FILES/testnet-config.json \
-    $URL_CONFIG_FILES/testnet-byron-genesis.json \
-    $URL_CONFIG_FILES/testnet-shelley-genesis.json \
-    $URL_CONFIG_FILES/testnet-alonzo-genesis.json \
-    $URL_CONFIG_FILES/testnet-topology.json
+RUN wget -P /node/configuration \
+    https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/testnet-config.json \
+    https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/testnet-byron-genesis.json \
+    https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/testnet-shelley-genesis.json \
+    https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/testnet-alonzo-genesis.json \
+    https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/testnet-topology.json
 
 # Change config to save them in /root/node/log/node.log file instead of stdout
-RUN sed -i 's/StdoutSK/FileSK/' /node/configuration/testnet-config.json
-RUN sed -i 's/stdout/\/node\/logs\/node.log/' /node/configuration/testnet-config.json
+RUN sed -i 's/StdoutSK/FileSK/' /node/configuration/testnet-config.json && \
+    sed -i 's/stdout/\/node\/logs\/node.log/' /node/configuration/testnet-config.json
 
 # Set node socket for cardano-cli in evironment
 ENV CARDANO_NODE_SOCKET_PATH="/node/ipc/node.socket"
+
+# Set testnet magic number
+ENV TESNET_MAGIC=1097911063
 
 # Create keys folder
 RUN mkdir -p /node/keys
@@ -91,9 +110,6 @@ COPY cardano-scripts/ /bin
 
 # Set executable permits
 RUN /bin/bash -c "chmod +x /bin/cardano-*.sh"
-
-# Set testnet magic number
-ENV TESNET_MAGIC=1097911063
 
 # Run cardano-node at the startup
 CMD [ "/bin/cardano-node-run.sh" ]
