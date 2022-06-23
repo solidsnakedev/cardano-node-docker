@@ -25,7 +25,7 @@ read script
 
 cardano-cli address build \
     --payment-script-file /node/scripts/${script}.plutus \ 
-    --testnet-magic $TESTNET_MAGIC_NUM
+    --testnet-magic $TESTNET_MAGIC_NUM \
     --out-file /node/keys/${script}.addr
 
 echo -e "\nInsert datum value (example ...) : "

@@ -5,26 +5,19 @@ This guide will show you how to compile and install the `cardano-node` and `card
 ## 1. Install Docker Engine Ubuntu
 https://docs.docker.com/engine/install/ubuntu/
 
-## 2. Creating docker volume
-The purpose of this volume is to share a persistent storage between the host and the container.
-This folder is nomally stored in `/var/lib/docker/volumes/cardano-node-db/_data`
-```
-docker volume create cardano-node-db
-```
-
-## 3. Give executable permissions to docker scripts
+## 2. Give executable permissions to docker scripts
 ```
 chmod +x docker-*
 ```
 
-## 4. Building image
+## 3. Building image
 You can build the image using the script `docker-build-image.sh`, the image size is ~10 GB
 
 ```
 ./docker-build-image.sh
 ```
 
-## 5. Running container :smiley:
+## 4. Running container :smiley:
 You can run a container from the new cardano-node image.
 The `Dockerfile` has an `CMD` to run the cardano-node as soon as you run the container
 * Run container in detached mode
@@ -33,7 +26,7 @@ The `Dockerfile` has an `CMD` to run the cardano-node as soon as you run the con
 ./docker-run-container.sh
 ```
 
-## 6. Getting status of cardano-node from host
+## 5. Getting status of cardano-node from host
 ```
 ./docker-cardano-cli-stats.sh
 ```
@@ -70,7 +63,7 @@ git rev 73f9a746362695dc2cb63ba757fbcabb81733d23
     "block": 3631266
 }
 ```
-## 7. Creating bash session in container
+## 6. Creating bash session in container
 Fist we need to list the running containers
 ```
 docker ps
@@ -82,12 +75,12 @@ CONTAINER ID   IMAGE          COMMAND                  CREATED        STATUS    
 ee67eac03bec   cardano-node   "/root/.local/bin/st…"   13 hours ago   Up 13 hours             awesome_gagarin
 ```
 
-### 7.1 Now you can access the container (example `awesome_gagarin`)
+### 6.1 Now you can access the container (example `awesome_gagarin`)
 ```
 ./docker-interact.sh awesome_gagarin
 ```
 
-### 7.2 Inside cardano-node container
+### 6.2 Inside cardano-node container
 Once you're inside the container you can run `cardano-node` or `cardano-cli` commands.
 
 *Note: The environment variable `$TESNET_MAGIC` is set in `Dockerfile`*
@@ -108,7 +101,7 @@ root@ee67eac03bec:/# cardano-cli-tip.sh
 ```
 
 
-### 8. Exiting the container
+### 7. Exiting the container
 You can exit the container typing `exit`
 ```
 Example
@@ -116,15 +109,14 @@ root@ee67eac03bec:/# exit
 exit
 ```
 
-## 9. Removing containers
+## 8. Removing containers
 You can remove all the containers with the below script, and this will only remove containers with exited status
 ```
 ./docker-rm-containers.sh
 ```
 
-## 10. Removing images
+## 9. Removing images
 You can remove all the images with the below script, and this will only remove the untagged images
 ```
 ./docker-rm-images.sh
 ```
-

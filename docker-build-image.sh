@@ -1,2 +1,2 @@
 echo -e "- Creating cardano-node image\n"
-docker build -t cardano-node .
+DOCKER_BUILDKIT=1 docker build -t cardano-node .
