@@ -1,8 +1,6 @@
-echo -e "\nInsert key name (example payment1) : "
-read key
-
-echo -e "\nInsert stake key name (example stake1) : "
-read stake
+#!/bin/bash
+read -p "Insert key name (example payment1) : " key
+read -p "Insert stake key name (example stake1) : " stake
 
 cardano-cli address key-gen \
 --verification-key-file /node/keys/${key}.vkey \
