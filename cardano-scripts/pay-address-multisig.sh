@@ -10,7 +10,7 @@ read -p "Insert tx-in : " txIn2
 read -p "Insert tx-in id : " txInId2
 
 read -p "Insert change address (example payment1) : " change
-read -p "Insert amount to pay (example 500 ADA = 500,000,000 lovelace) : " amount
+read -p "Insert amount to send (example 500 ADA = 500,000,000 lovelace) : " amount
 read -p "Insert destination address to pay (example payment2) : " dest
 
 cardano-cli transaction build \

@@ -4,7 +4,7 @@ read -p "Insert origin address (example payment1) : " origin && /bin/query-utxo.
 read -p "Insert tx-in : " txIn
 read -p "Insert tx-in id : " txInId
 read -p "Insert destination address to pay (example payment2) : " dest
-read -p "Insert amount to pay (example 500 ADA = 500,000,000 lovelace) : " amount
+read -p "Insert amount to send (example 500 ADA = 500,000,000 lovelace) : " amount
 
 cardano-cli transaction build \
 --testnet-magic ${TESNET_MAGIC} \
