@@ -109,7 +109,7 @@ RUN mkdir -p /node/keys
 COPY cardano-scripts/ /bin
 
 # Set executable permits
-RUN /bin/bash -c "chmod +x /bin/cardano-*.sh"
+RUN /bin/bash -c "chmod +x /bin/*.sh"
 
 # Run cardano-node at the startup
 CMD [ "/bin/cardano-node-run.sh" ]
