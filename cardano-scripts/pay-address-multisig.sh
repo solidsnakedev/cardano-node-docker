@@ -1,5 +1,5 @@
 #!/bin/bash
-echo -e "\nPayment addresses" && ls /node/keys/*.addr
+echo -e "\nPayment addresses" && ls -1 /node/keys/*.addr
 
 read -p "Insert origin 1 address (example payment1) : " origin1 && /bin/query-utxo.sh ${origin1}
 read -p "Insert tx-in : " txIn1

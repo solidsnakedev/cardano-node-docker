@@ -1,12 +1,12 @@
 #!/bin/bash
 echo -e "\nPayment addresses found"
-ls /node/keys/*.addr
+ls -1 /node/keys/*.addr
 
 read -p "Insert origin address (example payment1) : " origin && /bin/query-utxo.sh ${origin}
 read -p "Insert TxHash : " txIn
 read -p "Insert TxIx id : " txInId
 read -p "Insert amount to send (example 500 ADA = 500,000,000 lovelace) : " amount
-ls /node/scripts/*.plutus
+ls -1 /node/scripts/*.plutus
 read -p "Insert plutus script name (example ...) : " script
 read -p "Insert datum value (example 123) : " datum
 datum_hash=$(cardano-cli transaction hash-script-data --script-data-value ${datum})

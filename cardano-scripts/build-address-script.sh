@@ -1,5 +1,5 @@
 #!/bin/bash
-echo -e "\nScripts found" && ls /node/scripts/
+echo -e "\nScripts found" && ls -1 /node/scripts/
 read -p "Insert plutus script name (example AlwaysSucced): " script
 
 if [[ -e /node/scripts/${script}.plutus ]]

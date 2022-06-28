@@ -2,7 +2,7 @@
 ## Overview
 This guide will show you how to compile and install the `cardano-node` and `cardano-cli` using Docker container, directly from the source-code.
 
-Image size is only ~787MB !
+Image size is only ~800MB !
 
 ## 1. Install Docker Engine Ubuntu
 https://docs.docker.com/engine/install/ubuntu/
@@ -13,7 +13,7 @@ chmod +x docker-*
 ```
 
 ## 3. Building image
-You can build the image using the script `docker-build-image.sh`, the image size is ~10 GB
+You can build the image using the script `docker-build-image.sh`, the image size is ~800 MB
 
 ```
 ./docker-build-image.sh
@@ -87,11 +87,11 @@ Once you're inside the container you can run `cardano-node` or `cardano-cli` com
 
 *Note: The environment variable `$TESNET_MAGIC` is set in `Dockerfile`*
 ```
-cardano-cli-tip.sh 
+query-tip.sh 
 ```
 Example
 ```
-root@ee67eac03bec:/# cardano-cli-tip.sh 
+root@ee67eac03bec:/# query-tip.sh 
 {
     "era": "Alonzo",
     "syncProgress": "100.00",

@@ -1,5 +1,5 @@
 #!/bin/bash
-echo -e "\nVerification keys found" && ls /node/keys/*.vkey
+echo -e "\nVerification keys found : " && ls -1 /node/keys/*.vkey
 read -p "Insert verification key name (example payment1): " key
 read -p "Insert verification stake key name (example stake1): " stake
 
