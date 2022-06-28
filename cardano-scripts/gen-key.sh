@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 read -p "Insert key name (example payment1) : " key
 read -p "Insert stake key name (example stake1) : " stake
 

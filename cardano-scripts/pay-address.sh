@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 echo -e "\nPayment addresses" && ls -1 /node/keys/*.addr
 read -p "Insert origin address (example payment1) : " origin && /bin/query-utxo.sh ${origin}
 read -p "Insert tx-in : " txIn

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 echo -e "The following transaction includes metadata . The origin and destination address are the same and the amount of ADA to send is 0"
 echo -e "\nPayment addresses" && ls -1 /node/keys/*.addr
 read -p "Insert origin address (example payment1) : " origin && /bin/query-utxo.sh ${origin}

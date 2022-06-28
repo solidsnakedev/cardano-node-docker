@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 echo -e "\nPayment addresses found"
 ls -1 /node/keys/*.addr
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 echo -e "\nScripts found" && ls -1 /node/scripts/
 read -p "Insert plutus script name (example AlwaysSucced): " script
 
