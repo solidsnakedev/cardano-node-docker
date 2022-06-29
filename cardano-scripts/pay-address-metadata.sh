@@ -8,12 +8,15 @@ read -p "Insert tx-in id : " txInId
 ls -1 /node/data/*.json
 read -p "Insert json file name : " jsonfile
 
+min_utxo=$(cardano-cli transaction calculate-min-required-utxo \
+    --protocol-params-file /node/protocol.json \
+    --tx-out $(cat /node/keys/${origin}.addr)+0 | awk '{print $2}')
+
 cardano-cli transaction build \
     --testnet-magic ${TESNET_MAGIC} \
     --change-address $(cat /node/keys/${origin}.addr) \
     --tx-in "${txIn}#${txInId}" \
-    --tx-out $(cat /node/keys/${origin}.addr)+0 \
-    --metadata-json-file /node/data/${jsonfile}.json
+    --metadata-json-file /node/data/${jsonfile}.json \
     --out-file /node/keys/tx.build
 
 cardano-cli transaction sign \
