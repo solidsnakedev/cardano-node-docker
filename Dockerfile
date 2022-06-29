@@ -1,17 +1,17 @@
 FROM ubuntu:rolling AS builder
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Trick to disable cache when a new cardano-node version is found
 ADD https://api.github.com/repos/input-output-hk/cardano-node/releases/latest latest_commit
-# Install ubuntu dependencies
+
+# Install dependencies
 RUN apt-get update -y && \
-    apt-get install git jq bc make automake rsync htop curl build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ wget libncursesw5 libtool autoconf -y
+    apt-get install automake build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ tmux git jq wget libncursesw5 libtool autoconf liblmdb-dev curl -y
 
-# Install Cabal dependencies
-RUN apt-get -y install pkg-config libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev build-essential curl libgmp-dev libffi-dev libncurses-dev libtinfo5
-
+# Create src folder for installations
 RUN mkdir src
 
-#Install libsodium
+# Install libsodium
 RUN cd src && \
     git clone https://github.com/input-output-hk/libsodium && \
     cd libsodium && \
@@ -78,8 +78,13 @@ COPY --from=builder /bin/cardano-cli /bin
 COPY --from=builder /bin/cardano-node /bin
 
 # Install ubuntu dependencies
+#RUN apt-get update -y && \
+#    apt-get install git jq bc make automake rsync htop curl build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ wget libncursesw5 libtool autoconf -y
+
+# Install dependencies
 RUN apt-get update -y && \
-    apt-get install git jq bc make automake rsync htop curl build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ wget libncursesw5 libtool autoconf -y
+    apt-get install automake build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ tmux git jq wget libncursesw5 libtool autoconf liblmdb-dev curl vim -y
+
 
 #Install libsodium
 RUN mkdir src && \
@@ -102,6 +107,7 @@ RUN cd src && \
     make && \
     make install
 
+# Delete src folder
 RUN rm -r /src
 
 # Update PATH
@@ -126,8 +132,8 @@ ENV CARDANO_NODE_SOCKET_PATH="/node/ipc/node.socket"
 # Set testnet magic number
 ENV TESNET_MAGIC=1097911063
 
-# Create keys folder
-RUN mkdir -p /node/keys /node/ipc
+# Create keys, ipc, data, scripts folders
+RUN mkdir -p /node/keys /node/ipc /node/data /node/scripts
 
 # Copy scripts
 COPY cardano-scripts/ /bin
