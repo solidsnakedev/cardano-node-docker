@@ -1,6 +1,22 @@
 #!/bin/bash
 set -euo pipefail
-echo -e "\nPayment addresses found"
+
+# High Intensity
+IBlack='\033[0;90m'       # Black
+IRed='\033[0;91m'         # Red
+IGreen='\033[0;92m'       # Green
+IYellow='\033[0;93m'      # Yellow
+IBlue='\033[0;94m'        # Blue
+IPurple='\033[0;95m'      # Purple
+ICyan='\033[0;96m'        # Cyan
+IWhite='\033[0;97m'       # White
+Reset='\e[0m'
+
+echo_green(){
+  echo -e "${IGreen}$1${Reset}"
+}
+
+echo_green "\nList of addresses"
 ls -1 /node/keys/*.addr
 
 read -p "Insert origin address (example payment1) : " origin && /bin/query-utxo.sh ${origin}
@@ -13,6 +29,7 @@ read -p "Insert datum value (example 123) : " datum
 datum_hash=$(cardano-cli transaction hash-script-data --script-data-value ${datum})
 echo -e "Datum Hash : \n${datum_hash}"
 
+echo_green "\n- Building transaction"
 cardano-cli transaction build \
     --tx-in "${txIn}#${txInId}" \
     --tx-out $(cat /node/keys/${script}.addr)+${amount} \
@@ -21,12 +38,14 @@ cardano-cli transaction build \
     --testnet-magic ${TESNET_MAGIC} \
     --out-file /node/keys/plutx.build
 
+echo_green "\n- Signing transaction"
 cardano-cli transaction sign \
     --tx-body-file /node/keys/plutx.build \
     --signing-key-file /node/keys/${origin}.skey \
     --testnet-magic ${TESNET_MAGIC} \
     --out-file /node/keys/plutx.signed
 
+echo_green "\n- Submiting transaction"
 cardano-cli transaction submit \
     --tx-file /node/keys/plutx.signed \
     --testnet-magic ${TESNET_MAGIC}
