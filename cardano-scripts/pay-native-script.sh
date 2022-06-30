@@ -15,7 +15,7 @@ echo_green(){
   echo -e "${IGreen}$1${Reset}"
 }
 
-echo_green "This will generate a multisig script where ADA is locked, and 2 users must sign the transaction in order to spend the utxo from the script"
+echo_green "\nThis program requires 2 witnesses in order to create a native script\n ADA is locked in native script, and then the 2 witnesses must sign the transaction in order to spend the utxo from the native script"
 
 echo_green "\n- List of addresses" && ls -1 /node/keys/*.addr
 
@@ -56,7 +56,9 @@ if [[ ${ans} == "y" ]]; then
   sleep 20
 fi
 
-echo_green "\n- Querying multiSigPolicy.addr utxo"
+echo_green "\n- The following is used to consumed the utxo from the native script"
+
+echo_green "\n- Querying multiSigPolicy.addr utxos"
 
 /bin/query-utxo.sh multiSigPolicy
 
@@ -64,9 +66,10 @@ read -p "Insert tx-in : " txIn
 read -p "Insert tx-in id : " txInId
 
 echo_green "\n- Addresses" && ls -1 /node/keys/*.addr
+echo_green " Note: tx-in consumed from multiSigPolicy and total amount is sent to change address"
 read -p "Insert change address (example payment3) : " change
 
-echo_green "\n- Building transaction\n- Note: tx-in consumed from multiSigPolicy and total amount sent to change address"
+echo_green "\n- Building transaction"
 cardano-cli transaction build \
     --tx-in "${txIn}#${txInId}" \
     --tx-in-script-file /node/scripts/multiSigPolicy.script \

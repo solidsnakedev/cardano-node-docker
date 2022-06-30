@@ -21,14 +21,15 @@ read -p "Insert origin address (example payment1) : " origin && /bin/query-utxo.
 read -p "Insert tx-in : " txIn
 read -p "Insert tx-in id : " txInId
 read -p "Insert destination address to pay (example payment2) : " dest
+read -p "Insert change address (example payment1) : " change
 read -p "Insert amount to send (example 500 ADA = 500,000,000 lovelace) : " amount
 
 echo_green "\n- Building transaction"
 cardano-cli transaction build \
-    --testnet-magic ${TESNET_MAGIC} \
-    --change-address $(cat /node/keys/${origin}.addr) \
     --tx-in "${txIn}#${txInId}" \
     --tx-out $(cat /node/keys/${dest}.addr)+${amount} \
+    --change-address $(cat /node/keys/${change}.addr) \
+    --testnet-magic ${TESNET_MAGIC} \
     --out-file /node/keys/tx.build
 
 echo_green "\n- Signing transaction"

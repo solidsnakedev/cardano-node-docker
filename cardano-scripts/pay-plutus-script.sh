@@ -16,7 +16,7 @@ echo_green(){
   echo -e "${IGreen}$1${Reset}"
 }
 
-echo_green "\nList of addresses"
+echo_green "\n- List of addresses"
 ls -1 /node/keys/*.addr
 
 read -p "Insert origin address (example payment1) : " origin && /bin/query-utxo.sh ${origin}

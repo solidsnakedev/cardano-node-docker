@@ -15,6 +15,7 @@ Reset='\e[0m'
 echo_green(){
   echo -e "${IGreen}$1${Reset}"
 }
+echo_green "\nThis program requires 2 witnesses to sign the transaction in order to spend the utxo from the native script"
 
 echo_green "\n- List of Addresses" && ls -1 /node/keys/*.addr
 
@@ -26,11 +27,12 @@ read -p "Insert origin 2 address (example payment2) : " origin2 && /bin/query-ut
 read -p "Insert tx-in : " txIn2
 read -p "Insert tx-in id : " txInId2
 
-read -p "Insert change address (example payment1) : " change
-read -p "Insert amount to send (example 500 ADA = 500,000,000 lovelace) : " amount
 read -p "Insert destination address to pay (example payment2) : " dest
+read -p "Insert change address (example payment1) : " change
 
-echo_green "\n- Building transaction \nNote: tx-in consumed from 2 origin addresses, and 1 txout to destination address"
+read -p "Insert amount to send (example 500 ADA = 500,000,000 lovelace) : " amount
+
+echo_green "\n- Building transaction \n Note: tx-in consumed from 2 origin addresses, and 1 txout to destination address"
 cardano-cli transaction build \
     --testnet-magic ${TESNET_MAGIC} \
     --change-address $(cat /node/keys/${change}.addr) \

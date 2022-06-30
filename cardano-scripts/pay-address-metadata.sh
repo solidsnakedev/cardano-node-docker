@@ -1,5 +1,4 @@
 #!/bin/bash
-set -euo pipefail
 
 # High Intensity
 IBlack='\033[0;90m'       # Black
@@ -26,7 +25,7 @@ read -p "Insert tx-in : " txIn
 read -p "Insert tx-in id : " txInId
 
 ls -1 /node/data/*.json 2> /dev/null
-if [[ $? -ne 0 ]]; then echo_red "Please generate a json file or run script gen-dummy-json.sh"; exit 1; fi
+if [[ $? -ne 0 ]]; then echo_red "Error: Json file missing!. Create a Json file or run script gen-dummy-json.sh"; exit 1; fi
 
 read -p "Insert json file name : " jsonfile
 
@@ -35,12 +34,12 @@ min_utxo=$(cardano-cli transaction calculate-min-required-utxo \
     --protocol-params-file /node/protocol.json \
     --tx-out $(cat /node/keys/${origin}.addr)+0 | awk '{print $2}')
 
-echo_green "\n- Building transaction \nNote: origin and change address are the same"
+echo_green "\n- Building transaction \n Note: origin and change address are the same"
 cardano-cli transaction build \
-    --testnet-magic ${TESNET_MAGIC} \
-    --change-address $(cat /node/keys/${origin}.addr) \
     --tx-in "${txIn}#${txInId}" \
+    --change-address $(cat /node/keys/${origin}.addr) \
     --metadata-json-file /node/data/${jsonfile}.json \
+    --testnet-magic ${TESNET_MAGIC} \
     --out-file /node/keys/tx.build
 
 echo_green "\n- Signing transaction"
