@@ -21,7 +21,6 @@ RUN cd src && \
     make && \
     make install
 
-
 #Install libsecp256k1
 RUN cd src && \
     git clone https://github.com/bitcoin-core/secp256k1 && \
@@ -44,7 +43,6 @@ RUN ghcup upgrade && \
 # Update PATH
 ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 ENV PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
-
 
 # Update Cabal
 RUN cabal update
@@ -71,20 +69,14 @@ RUN cd src/cardano-node && \
 RUN cp $(find /src/cardano-node/dist-newstyle/build -type f -name "cardano-cli") /bin/cardano-cli
 RUN cp $(find /src/cardano-node/dist-newstyle/build -type f -name "cardano-node") /bin/cardano-node
 
-
 FROM ubuntu:rolling
 
 COPY --from=builder /bin/cardano-cli /bin
 COPY --from=builder /bin/cardano-node /bin
 
-# Install ubuntu dependencies
-#RUN apt-get update -y && \
-#    apt-get install git jq bc make automake rsync htop curl build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ wget libncursesw5 libtool autoconf -y
-
 # Install dependencies
 RUN apt-get update -y && \
     apt-get install automake build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ tmux git jq wget libncursesw5 libtool autoconf liblmdb-dev curl vim -y
-
 
 #Install libsodium
 RUN mkdir src && \
@@ -132,8 +124,8 @@ ENV CARDANO_NODE_SOCKET_PATH="/node/ipc/node.socket"
 # Set testnet magic number
 ENV TESNET_MAGIC=1097911063
 
-# Create keys, ipc, data, scripts folders
-RUN mkdir -p /node/keys /node/ipc /node/data /node/scripts
+# Create keys, ipc, data, scripts, logs folders
+RUN mkdir -p /node/keys /node/ipc /node/data /node/scripts /node/logs
 
 # Copy scripts
 COPY cardano-scripts/ /bin
