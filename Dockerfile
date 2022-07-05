@@ -1,12 +1,12 @@
 FROM ubuntu:rolling AS builder
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Trick to disable cache when a new cardano-node version is found
-ADD https://api.github.com/repos/input-output-hk/cardano-node/releases/latest latest_commit
-
 # Install dependencies
 RUN apt-get update -y && \
     apt-get install automake build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ tmux git jq wget libncursesw5 libtool autoconf liblmdb-dev curl -y
+
+# Trick to disable cache when a new cardano-node version is found
+ADD https://api.github.com/repos/input-output-hk/cardano-node/releases/latest latest_commit
 
 # Create src folder for installations
 RUN mkdir src
@@ -66,13 +66,13 @@ RUN cd src/cardano-node && \
     cabal build all
 
 # Find and copy binaries to ~/.local/bin
-RUN cp $(find /src/cardano-node/dist-newstyle/build -type f -name "cardano-cli") /bin/cardano-cli
-RUN cp $(find /src/cardano-node/dist-newstyle/build -type f -name "cardano-node") /bin/cardano-node
+RUN cp $(find /src/cardano-node/dist-newstyle/build -type f -name "cardano-cli") /usr/local/bin/cardano-cli
+RUN cp $(find /src/cardano-node/dist-newstyle/build -type f -name "cardano-node") /usr/local/bin/cardano-node
 
 FROM ubuntu:rolling
 
-COPY --from=builder /bin/cardano-cli /bin
-COPY --from=builder /bin/cardano-node /bin
+COPY --from=builder /usr/local/bin/cardano-cli /usr/local/bin
+COPY --from=builder /usr/local/bin/cardano-node /usr/local/bin
 
 # Install dependencies
 RUN apt-get update -y && \
@@ -102,10 +102,6 @@ RUN cd src && \
 # Delete src folder
 RUN rm -r /src
 
-# Update PATH
-ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
-ENV PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
-
 # Get latest config files from IOHK github api
 RUN wget -P /node/configuration \
     https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/testnet-config.json \
@@ -118,7 +114,11 @@ RUN wget -P /node/configuration \
 RUN sed -i 's/StdoutSK/FileSK/' /node/configuration/testnet-config.json && \
     sed -i 's/stdout/\/node\/logs\/node.log/' /node/configuration/testnet-config.json
 
-# Set node socket for cardano-cli in evironment
+# Update libsodium PATH
+ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+ENV PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+# Set node socket evironment for cardano-cli
 ENV CARDANO_NODE_SOCKET_PATH="/node/ipc/node.socket"
 
 # Set testnet magic number
@@ -128,10 +128,10 @@ ENV TESNET_MAGIC=1097911063
 RUN mkdir -p /node/keys /node/ipc /node/data /node/scripts /node/logs
 
 # Copy scripts
-COPY cardano-scripts/ /bin
+COPY cardano-scripts/ /usr/local/bin
 
 # Set executable permits
-RUN /bin/bash -c "chmod +x /bin/*.sh"
+RUN /bin/bash -c "chmod +x /usr/local/bin/*.sh"
 
 # Run cardano-node at the startup
-CMD [ "/bin/cardano-node-run.sh" ]
+CMD [ "/usr/local/bin/cardano-node-run.sh" ]
