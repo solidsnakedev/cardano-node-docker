@@ -16,7 +16,7 @@ then
         --payment-verification-key-file ${key_path}/${key}.vkey \
         --stake-verification-key-file ${key_path}/${stake}.vkey \
         --out-file ${key_path}/${key}.addr \
-        --testnet-magic $TESNET_MAGIC
+        --testnet-magic $TESTNET_MAGIC
     echo_green "\n- Cardano address created"
     ls ${key_path}/${key}.addr
     echo -e "\n"

@@ -12,7 +12,7 @@ ${cardano_script_path}/query-utxo.sh ${origin}
 #--------- Query utxos and save it in fullUtxo.out ---------
 ${cardanocli} query utxo \
     --address $(cat ${key_path}/${origin}.addr) \
-    --testnet-magic ${TESNET_MAGIC} > ${data_path}/fullUtxo.out
+    --testnet-magic ${TESTNET_MAGIC} > ${data_path}/fullUtxo.out
 
 #--------- Remove 3 first rows, and sort balance ---------
 tail -n +3 ${data_path}/fullUtxo.out | sort -k3 -nr > ${data_path}/balance.out
@@ -44,17 +44,17 @@ ${cardanocli} transaction build \
     --babbage-era \
     ${tx_in} \
     --change-address $(cat ${key_path}/${origin}.addr) \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/tx.build
 
 echo_green "\n- Signing transaction"
 ${cardanocli} transaction sign \
     --tx-body-file ${key_path}/tx.build \
     --signing-key-file ${key_path}/${origin}.skey \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/tx.signed
 
 echo_green "\n- Submiting transaction"
 ${cardanocli} transaction submit \
     --tx-file ${key_path}/tx.signed \
-    --testnet-magic ${TESNET_MAGIC}
+    --testnet-magic ${TESTNET_MAGIC}

@@ -21,17 +21,17 @@ ${cardanocli} transaction build \
     --tx-in "${txIn}#${txInId}" \
     --change-address $(cat ${key_path}/${origin}.addr) \
     --metadata-json-file ${data_path}/${jsonfile}.json \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/metatx.build
 
 echo_green "\n- Signing transaction"
 ${cardanocli} transaction sign \
     --tx-body-file ${key_path}/metatx.build \
     --signing-key-file ${key_path}/${origin}.skey \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/metatx.signed
 
 echo_green "\n- Submiting transaction"
 ${cardanocli} transaction submit \
     --tx-file ${key_path}/metatx.signed \
-    --testnet-magic ${TESNET_MAGIC}
+    --testnet-magic ${TESTNET_MAGIC}

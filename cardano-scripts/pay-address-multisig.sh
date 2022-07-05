@@ -30,21 +30,21 @@ ${cardanocli} transaction build \
     --tx-out $(cat ${key_path}/${dest}.addr)+${amount} \
     --change-address $(cat ${key_path}/${change}.addr) \
     --witness-override 2 \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/multx.build
 
 echo_green "\n- Signing transaction witness 1"
 ${cardanocli} transaction witness \
     --tx-body-file ${key_path}/multx.build \
     --signing-key-file ${key_path}/${origin1}.skey \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/${origin1}.witness
 
 echo_green "\n- Signing transaction witness 2"
 ${cardanocli} transaction witness \
     --tx-body-file ${key_path}/multx.build \
     --signing-key-file ${key_path}/${origin2}.skey \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/${origin2}.witness
 
 echo_green "\n- Assembling transaction witness 1 and 2"
@@ -57,4 +57,4 @@ ${cardanocli} transaction assemble \
 echo_green "\n- Submiting transaction"
 ${cardanocli} transaction submit \
     --tx-file ${key_path}/multx.signed \
-    --testnet-magic ${TESNET_MAGIC}
+    --testnet-magic ${TESTNET_MAGIC}

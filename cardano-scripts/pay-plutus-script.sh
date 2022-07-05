@@ -26,17 +26,17 @@ ${cardanocli} transaction build \
     --tx-out $(cat ${key_path}/${script}.addr)+${amount} \
     --tx-out-datum-hash ${datum_hash} \
     --change-address $(cat ${key_path}/${origin}.addr) \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/plutx.build
 
 echo_green "\n- Signing transaction"
 ${cardanocli} transaction sign \
     --tx-body-file ${key_path}/plutx.build \
     --signing-key-file ${key_path}/${origin}.skey \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/plutx.signed
 
 echo_green "\n- Submiting transaction"
 ${cardanocli} transaction submit \
     --tx-file ${key_path}/plutx.signed \
-    --testnet-magic ${TESNET_MAGIC}
+    --testnet-magic ${TESTNET_MAGIC}

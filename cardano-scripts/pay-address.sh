@@ -19,17 +19,17 @@ ${cardanocli} transaction build \
     --tx-in "${txIn}#${txInId}" \
     --tx-out $(cat ${key_path}/${dest}.addr)+${amount} \
     --change-address $(cat ${key_path}/${change}.addr) \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/tx.build
 
 echo_green "\n- Signing transaction"
 ${cardanocli} transaction sign \
     --tx-body-file ${key_path}/tx.build \
     --signing-key-file ${key_path}/${origin}.skey \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/tx.signed
 
 echo_green "\n- Submiting transaction"
 ${cardanocli} transaction submit \
     --tx-file ${key_path}/tx.signed \
-    --testnet-magic ${TESNET_MAGIC}
+    --testnet-magic ${TESTNET_MAGIC}

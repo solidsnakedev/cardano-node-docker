@@ -35,7 +35,7 @@ cat ${script_path}/multiSigPolicy.script
 echo_green "\n- Creating ${key_path}/multiSigPolicy.addr"
 ${cardanocli} address build \
     --payment-script-file ${script_path}/multiSigPolicy.script \
-    --testnet-magic $TESNET_MAGIC \
+    --testnet-magic $TESTNET_MAGIC \
     --out-file ${key_path}/multiSigPolicy.addr
 
 echo_green "\n- Send ADA to script? (y/n)"
@@ -67,21 +67,21 @@ ${cardanocli} transaction build \
     --tx-in-script-file ${script_path}/multiSigPolicy.script \
     --change-address $(cat ${key_path}/${change}.addr) \
     --witness-override 2 \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/mulsigpoltx.build
 
 echo_green "\n- Signing transaction witness 1"
 ${cardanocli} transaction witness \
     --tx-body-file ${key_path}/mulsigpoltx.build \
     --signing-key-file ${key_path}/${origin1}.skey \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/${origin1}.witness
 
 echo_green "\n- Signing transaction witness 2"
 ${cardanocli} transaction witness \
     --tx-body-file ${key_path}/mulsigpoltx.build \
     --signing-key-file ${key_path}/${origin2}.skey \
-    --testnet-magic ${TESNET_MAGIC} \
+    --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/${origin2}.witness
 
 echo_green "\n- Assembling transaction witness 1 and 2"
@@ -94,7 +94,7 @@ ${cardanocli} transaction assemble \
 echo_green "\n- Submiting transaction"
 ${cardanocli} transaction submit \
     --tx-file ${key_path}/mulsigpoltx.signed \
-    --testnet-magic ${TESNET_MAGIC}
+    --testnet-magic ${TESTNET_MAGIC}
 
 
 

@@ -122,7 +122,7 @@ ENV PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 ENV CARDANO_NODE_SOCKET_PATH="/node/ipc/node.socket"
 
 # Set testnet magic number
-ENV TESNET_MAGIC=1097911063
+ENV TESTNET_MAGIC=1097911063
 
 # Create keys, ipc, data, scripts, logs folders
 RUN mkdir -p /node/keys /node/ipc /node/data /node/scripts /node/logs

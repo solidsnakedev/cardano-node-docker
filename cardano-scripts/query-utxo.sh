@@ -17,7 +17,7 @@ then
     echo_green "\n- Address string value : $(cat ${key_path}/${key}.addr) "
     echo_green "\n- Queryng adddress in cardano testnet ...\n"
     ${cardanocli} query utxo \
-      --testnet-magic $TESNET_MAGIC \
+      --testnet-magic $TESTNET_MAGIC \
       --address $(cat ${key_path}/${key}.addr)
     echo -e "\n"
 else
