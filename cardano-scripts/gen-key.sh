@@ -1,15 +1,19 @@
 #!/bin/bash
 set -euo pipefail
-read -p "Insert key name (example payment1) : " key
+
+#--------- Import common paths and functions ---------
+source common.sh
+
+#--------- Run program ---------
+read -p "Insert key name (example payment1) : " payment
 read -p "Insert stake key name (example stake1) : " stake
 
-cardano-cli address key-gen \
---verification-key-file /node/keys/${key}.vkey \
---signing-key-file /node/keys/${key}.skey
+${cardanocli} address key-gen \
+    --verification-key-file ${key_path}/${payment}.vkey \
+    --signing-key-file ${key_path}/${payment}.skey
 
-cardano-cli stake-address key-gen \
-    --verification-key-file /node/keys/${stake}.vkey \
-    --signing-key-file /node/keys/${stake}.skey
+${cardanocli} stake-address key-gen \
+    --verification-key-file ${key_path}/${stake}.vkey \
+    --signing-key-file ${key_path}/${stake}.skey
 
-echo -e "\nKeys saved in /node/keys"
-ls /node/keys/
+echo_green "\nKeys saved in ${key_path}"

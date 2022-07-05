@@ -1,41 +1,25 @@
 #!/bin/bash
 
-# High Intensity
-IBlack='\033[0;90m'       # Black
-IRed='\033[0;91m'         # Red
-IGreen='\033[0;92m'       # Green
-IYellow='\033[0;93m'      # Yellow
-IBlue='\033[0;94m'        # Blue
-IPurple='\033[0;95m'      # Purple
-ICyan='\033[0;96m'        # Cyan
-IWhite='\033[0;97m'       # White
-Reset='\e[0m'
+#--------- Import common paths and functions ---------
+source common.sh
 
-echo_green(){
-  echo -e "${IGreen}$1${Reset}"
-}
-echo_red(){
-  echo -e "${IRed}$1${Reset}"
-}
-
+#--------- Run program ---------
 if [[ -z $1 ]]
 then
-    echo_green "\n- List of addresses :"
-    find /node/keys/ -name "*.addr" |  sed "s/.*\///"
-    echo_green "\nInsert address name without extension .addr: "
-    read key
+    echo_green "\n- List of addresses :" && ls -1 ${key_path}/*.addr
+    read -p "Insert address (example payment1): " key
 else
     key=$1
 fi
 
-if [[ -e /node/keys/${key}.addr ]]
+if [[ -e ${key_path}/${key}.addr ]]
 then
-    echo_green "\nAddress string value : $(cat /node/keys/${key}.addr) "
-    echo_green "\nQueryng adddress in cardano testnet ...\n"
-    cardano-cli query utxo \
-    --testnet-magic $TESNET_MAGIC \
-    --address $(cat /node/keys/${key}.addr)
+    echo_green "\n- Address string value : $(cat ${key_path}/${key}.addr) "
+    echo_green "\n- Queryng adddress in cardano testnet ...\n"
+    ${cardanocli} query utxo \
+      --testnet-magic $TESNET_MAGIC \
+      --address $(cat ${key_path}/${key}.addr)
     echo -e "\n"
 else
-    echo_red  "\nAddress does not exists!\n"
+    echo_red  "\n- Address does not exists!\n"
 fi

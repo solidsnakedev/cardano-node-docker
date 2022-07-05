@@ -1,35 +1,26 @@
 #!/bin/bash
 set -euo pipefail
 
-# High Intensity
-IBlack='\033[0;90m'       # Black
-IRed='\033[0;91m'         # Red
-IGreen='\033[0;92m'       # Green
-IYellow='\033[0;93m'      # Yellow
-IBlue='\033[0;94m'        # Blue
-IPurple='\033[0;95m'      # Purple
-ICyan='\033[0;96m'        # Cyan
-IWhite='\033[0;97m'       # White
-Reset='\e[0m'
+#--------- Import common paths and functions ---------
+source common.sh
 
-echo_green(){
-  echo -e "${IGreen}$1${Reset}"
-}
-echo_red(){
-  echo -e "${IRed}$1${Reset}"
-}
+#--------- Run program ---------
+echo_green "\n- List of addresses" && ls -1 ${key_path}/*.addr
+read -p "Insert origin address (example payment1) : " origin
+${cardano_script_path}/query-utxo.sh ${origin}
 
-echo_green "\n- List of addresses" && ls -1 /node/keys/*.addr
-read -p "Insert origin address (example payment1) : " origin && /bin/query-utxo.sh ${origin}
+#--------- Query utxos and save it in fullUtxo.out ---------
+${cardanocli} query utxo \
+    --address $(cat ${key_path}/${origin}.addr) \
+    --testnet-magic ${TESNET_MAGIC} > ${data_path}/fullUtxo.out
 
-cardano-cli query utxo \
-    --address $(cat /node/keys/${origin}.addr) \
-    --testnet-magic ${TESNET_MAGIC} > fullUtxo.out
+#--------- Remove 3 first rows, and sort balance ---------
+tail -n +3 ${data_path}/fullUtxo.out | sort -k3 -nr > ${data_path}/balance.out
 
-tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
+#--------- Print balance ---------
+cat ${data_path}/balance.out
 
-cat balance.out
-
+#--------- Read balance.out file and compose utxo inputs ---------
 tx_in=""
 total_balance=0
 while read -r utxo; do
@@ -41,27 +32,29 @@ while read -r utxo; do
     echo_green "ADA: ${utxo_balance}"
     tx_in="${tx_in} --tx-in ${in_addr}#${idx}"
     echo_green ${tx_in}
-done < balance.out
-txcnt=$(cat balance.out | wc -l)
+done < ${data_path}/balance.out
+txcnt=$(cat ${data_path}/balance.out | wc -l)
 echo_green "Total ADA balance: ${total_balance}"
 echo_green "Number of UTXOs: ${txcnt}"
 echo ${tx_in}
 
+#--------- Build transaction ---------
 echo_green "\n- Building transaction"
-cardano-cli transaction build \
+${cardanocli} transaction build \
+    --babbage-era \
     ${tx_in} \
-    --change-address $(cat /node/keys/${origin}.addr) \
+    --change-address $(cat ${key_path}/${origin}.addr) \
     --testnet-magic ${TESNET_MAGIC} \
-    --out-file /node/keys/tx.build
+    --out-file ${key_path}/tx.build
 
 echo_green "\n- Signing transaction"
-cardano-cli transaction sign \
-    --tx-body-file /node/keys/tx.build \
-    --signing-key-file /node/keys/${origin}.skey \
+${cardanocli} transaction sign \
+    --tx-body-file ${key_path}/tx.build \
+    --signing-key-file ${key_path}/${origin}.skey \
     --testnet-magic ${TESNET_MAGIC} \
-    --out-file /node/keys/tx.signed
+    --out-file ${key_path}/tx.signed
 
 echo_green "\n- Submiting transaction"
-cardano-cli transaction submit \
-    --tx-file /node/keys/tx.signed \
+${cardanocli} transaction submit \
+    --tx-file ${key_path}/tx.signed \
     --testnet-magic ${TESNET_MAGIC}

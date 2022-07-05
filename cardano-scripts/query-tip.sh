@@ -1,3 +1,7 @@
 #!/bin/bash
 set -euo pipefail
-cardano-cli query tip --testnet-magic $TESNET_MAGIC
+
+#--------- Import common paths and functions ---------
+source common.sh
+
+${cardanocli} query tip --testnet-magic $TESNET_MAGIC

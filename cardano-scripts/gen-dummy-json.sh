@@ -1,8 +1,16 @@
-cat > /node/data/dummy.json << EOF
+#!/bin/bash
+set -euo pipefail
+
+#--------- Import common paths and functions ---------
+source common.sh
+
+#--------- Run program ---------
+echo_green "- Generating dummy json file, saved in ${data_path}"
+cat > ${data_path}/dummy.json << EOF
 {
   "0":
     {
-      "node_version": "$(cardano-cli --version | awk 'NR==1{print}')",
+      "node_version": "$(${cardanocli} --version | awk 'NR==1{print}')",
       "message": "Hello world!",
       "time": "$(date)"
     },
@@ -12,3 +20,5 @@ cat > /node/data/dummy.json << EOF
     }
 }
 EOF
+
+cat ${data_path}/dummy.json

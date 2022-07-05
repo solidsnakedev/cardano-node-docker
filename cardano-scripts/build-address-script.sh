@@ -1,16 +1,22 @@
 #!/bin/bash
 set -euo pipefail
-echo -e "\nScripts found" && ls -1 /node/scripts/
+
+#--------- Import common paths and functions ---------
+source common.sh
+
+#--------- Run program ---------
+echo_green "\n- Scripts found" && ls -1 ${script_path}/*.plutus
 read -p "Insert plutus script name (example AlwaysSucced): " script
 
-if [[ -e /node/scripts/${script}.plutus ]]
+if [[ -e ${script_path}/${script}.plutus ]]
 then
-    echo -e "\nCreating/Deriving cardano address from plutus script"
-    cardano-cli address build \
-        --payment-script-file /node/scripts/${script}.plutus \
+    echo_green "\n- Creating/Deriving cardano address from plutus script"
+    ${cardanocli} address build \
+        --payment-script-file ${script_path}/${script}.plutus \
         --testnet-magic ${TESTNET_MAGIC} \
-        --out-file /node/keys/${script}.addr
-    echo -e "\nPlutus script address created $(ls /node/scripts/${script}.addr) \n"
+        --out-file ${key_path}/${script}.addr
+    echo_green "\n- Plutus script address created $(ls ${key_path}/${script}.addr) \n"
 else
-    echo -e "Plutus script does not exists! \nPlease build a plutus script\n"
+    echo_red "- Plutus script does not exists!\n"
+    echo_red "- Please build a plutus script\n"
 fi

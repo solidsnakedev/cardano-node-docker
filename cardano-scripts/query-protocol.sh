@@ -1,8 +1,14 @@
 #!/bin/bash
 set -euo pipefail
-echo -e "\nQueryng protocol parameters ..."
-cardano-cli query protocol-parameters \
+
+#--------- Import common paths and functions ---------
+source common.sh
+
+#--------- Run program ---------
+echo_green "\n- Queryng protocol parameters ..."
+${cardanocli} query protocol-parameters \
   --testnet-magic $TESNET_MAGIC \
-  --out-file /node/protocol.json
-echo -e "protocol.json saved in : \n"
-ls /node/protocol.json
+  --out-file ${data_path}/protocol.json
+
+echo_green "protocol.json saved in : \n"
+ls ${data_path}/protocol.json
