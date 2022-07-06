@@ -39,7 +39,7 @@ echo_green "Number of UTXOs: ${txcnt}"
 echo ${tx_in}
 
 #--------- Build transaction ---------
-echo_green "\n- Building transaction"
+echo_green "- Building transaction"
 ${cardanocli} transaction build \
     --babbage-era \
     ${tx_in} \
@@ -47,14 +47,14 @@ ${cardanocli} transaction build \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/tx.build
 
-echo_green "\n- Signing transaction"
+echo_green "- Signing transaction"
 ${cardanocli} transaction sign \
     --tx-body-file ${key_path}/tx.build \
     --signing-key-file ${key_path}/${origin}.skey \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/tx.signed
 
-echo_green "\n- Submiting transaction"
+echo_green "- Submiting transaction"
 ${cardanocli} transaction submit \
     --tx-file ${key_path}/tx.signed \
     --testnet-magic ${TESTNET_MAGIC}
