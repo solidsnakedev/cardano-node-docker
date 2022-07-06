@@ -30,39 +30,39 @@ The `Dockerfile` has an `CMD` to run the cardano-node as soon as you run the con
 
 ## 5. Getting status of cardano-node from host
 ```
-./docker-cardano-cli-stats.sh
+./docker-cardano-stats.sh
 ```
 Example
 ```
-❯  ./docker-cardano-cli-stats.sh 
+❯  ./docker-cardano-stats.sh 
 
 ### Printing cardano-cli version ###
 
-cardano-cli 1.34.1 - linux-x86_64 - ghc-8.10
-git rev 73f9a746362695dc2cb63ba757fbcabb81733d23
+cardano-cli 1.35.0 - linux-x86_64 - ghc-8.10
+git rev 9f1d7dc163ee66410d912e48509d6a2300cfa68a
 
 ### Printing cardano-node logs ###
 
-[730193f7:cardano.node.ChainDB:Notice:661] [2022-06-14 20:18:44.35 UTC] Chain extended, new tip: faff9e70bd777ce371e11368c6ad5b7f3d2ab6d8467c460d325786138e2378f7 at slot 60868708
-[730193f7:cardano.node.ChainDB:Notice:661] [2022-06-14 20:19:00.65 UTC] Chain extended, new tip: 9bfaea2e41ca5ee969f170d109474896fc1b625e45a1c9f8760143066c98462c at slot 60868724
-[730193f7:cardano.node.ChainDB:Notice:661] [2022-06-14 20:19:19.50 UTC] Chain extended, new tip: 14bdf2e7bac15861701657368393ed85894b7227bab461f32338c24bd951b183 at slot 60868743
-[730193f7:cardano.node.ChainDB:Notice:661] [2022-06-14 20:19:41.58 UTC] Chain extended, new tip: 7553e7ff144b0917b1605f979c220443cf221c859044dee13e871a3ac0b7e3de at slot 60868765
-[730193f7:cardano.node.ChainDB:Notice:661] [2022-06-14 20:20:16.59 UTC] Chain extended, new tip: 086e1abe775f2a0c40ed25d3f3f11db1a2878be337f164e05e3f4ee9f090a34b at slot 60868800
-[730193f7:cardano.node.ChainDB:Notice:661] [2022-06-14 20:20:42.81 UTC] Chain extended, new tip: 45d2446e5e67123246a338ddea9fd936bfb6fdcc659e6372943cd8c05ae7f57a at slot 60868826
-[730193f7:cardano.node.ChainDB:Notice:661] [2022-06-14 20:21:01.74 UTC] Chain extended, new tip: c137483d7f427061ee2fdbff97774e6178e62e01a6bacc791fbccedf580495ef at slot 60868845
-[730193f7:cardano.node.ChainDB:Notice:661] [2022-06-14 20:22:45.53 UTC] Chain extended, new tip: 90958bd76b5b165be1f5a3a89ca92572dc20d31c781a00f18341fb592325f5e7 at slot 60868949
-[730193f7:cardano.node.ChainDB:Notice:661] [2022-06-14 20:22:57.25 UTC] Chain extended, new tip: 0a077395844c0859b0b02480fde585cd1d49c57096df8f149fbaf2b735cff85f at slot 60868960
-[730193f7:cardano.node.ChainDB:Notice:661] [2022-06-14 20:22:59.93 UTC] Chain extended, new tip: 4e57c837b46d9a668e814adc3fedbb8953370c984810bf9c3cd8876496c42bcd at slot 60868963
+[a24cc094:cardano.node.ChainDB:Notice:2249] [2022-07-06 19:25:01.16 UTC] Chain extended, new tip: 151cf9008a65a773d7ed7cccf15338da4e1743422731dae859b76dcb5caf1d75 at slot 62766285
+[a24cc094:cardano.node.ChainDB:Notice:2249] [2022-07-06 19:26:21.31 UTC] Chain extended, new tip: 0459ac407ed3aa1eeec313776ab07fc8e17785f40041b18e4474096cec2ff4aa at slot 62766365
+[a24cc094:cardano.node.ChainDB:Notice:2249] [2022-07-06 19:26:41.46 UTC] Chain extended, new tip: 472852ee9275b7407b5dc56fe433fd91ce57aca9d546a744b8e86ca0121adbb6 at slot 62766385
+[a24cc094:cardano.node.ChainDB:Notice:2249] [2022-07-06 19:26:45.25 UTC] Chain extended, new tip: 326e0fbc173304f5575e6f772521a7cbf4fe877ec8298da3eba26a9d5ae8d1ea at slot 62766389
+[a24cc094:cardano.node.ChainDB:Notice:2249] [2022-07-06 19:27:17.52 UTC] Chain extended, new tip: 838b0adfc0997ca91ff66b2aacbbf23757031e4fd8fd4f560bd30df668e20d53 at slot 62766421
+[a24cc094:cardano.node.ChainDB:Notice:2249] [2022-07-06 19:27:28.31 UTC] Chain extended, new tip: c87290757d3ea02e9e378ca45f704b1a4123d0a7809551cd77f6652cdbe3239b at slot 62766432
+[a24cc094:cardano.node.ChainDB:Notice:2249] [2022-07-06 19:27:36.18 UTC] Chain extended, new tip: 94f4eb387bd8a82e385c5fef54f2fbd5e852769ff8b35230a53cbd2561f08795 at slot 62766440
+[a24cc094:cardano.node.ChainDB:Notice:2249] [2022-07-06 19:27:47.21 UTC] Chain extended, new tip: b5c9a280be7f254826a51d93f0c6a6bf48eaca05638f23ef1d850913fa9d8378 at slot 62766451
+[a24cc094:cardano.node.ChainDB:Notice:2249] [2022-07-06 19:28:33.31 UTC] Chain extended, new tip: 6d0a1fde84c208aee6e40a82863e9ab8a6efce6cdc5731b6a90345fcb91e04bf at slot 62766497
+[a24cc094:cardano.node.ChainDB:Notice:2249] [2022-07-06 19:29:16.23 UTC] Chain extended, new tip: 717f081c8037b8a1d5257c3a5592abd4938158c275220170e3f804cb1109ab03 at slot 62766540
 
 ### Printing tip of the blockchain ###
 
 {
-    "era": "Alonzo",
-    "syncProgress": "100.00",
-    "hash": "4e57c837b46d9a668e814adc3fedbb8953370c984810bf9c3cd8876496c42bcd",
-    "epoch": 211,
-    "slot": 60868963,
-    "block": 3631266
+    "block": 3688351,
+    "epoch": 215,
+    "era": "Babbage",
+    "hash": "717f081c8037b8a1d5257c3a5592abd4938158c275220170e3f804cb1109ab03",
+    "slot": 62766540,
+    "syncProgress": "100.00"
 }
 ```
 ## 6. Creating bash session in container
