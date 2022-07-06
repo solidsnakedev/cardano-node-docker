@@ -33,3 +33,5 @@ echo_green "- Submiting transaction"
 ${cardanocli} transaction submit \
     --tx-file ${key_path}/tx.signed \
     --testnet-magic ${TESTNET_MAGIC}
+
+echo_green "- Wait for ~20 seconds so the transaction is in the blockchain."

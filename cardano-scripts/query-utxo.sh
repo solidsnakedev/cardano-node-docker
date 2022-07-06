@@ -14,7 +14,7 @@ fi
 
 if [[ -e ${key_path}/${wallet}.addr ]]
 then
-    echo_green "\n- Address string value : $(cat ${key_path}/${wallet}.addr) "
+    echo_green "- Address string value : $(cat ${key_path}/${wallet}.addr) "
     echo_green "- Queryng adddress in cardano testnet ...\n"
     ${cardanocli} query utxo \
       --testnet-magic $TESTNET_MAGIC \
