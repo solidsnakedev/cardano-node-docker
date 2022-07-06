@@ -5,14 +5,6 @@ set -uo pipefail
 source common.sh
 
 #--------- Run program ---------
-echo_green "\n- List of addresses"
-ls -1 ${key_path}/*.addr
-
-read -p "Insert wallet origin address (example payment1) : " wallet_origin
-${cardano_script_path}/query-utxo.sh ${wallet_origin}
-read -p "Insert TxHash : " txIn_origin
-read -p "Insert TxIx id : " txInId_origin
-
 read -p "Insert Datum value (example 6666) : " datum_value
 echo_green "- Calculating Datum Hash"
 datum_hash=$(${cardanocli} transaction hash-script-data --script-data-value ${datum_value})
@@ -25,14 +17,20 @@ if [[ $? -ne 0 ]]; then echo_red "Error: Could not find Datum Hash in script utx
 
 read -p "Insert TxHash from script utxo: " txIn_script
 read -p "Insert TxIx id from script utxo: " txInId_script
-
 read -p "Insert amount to send from script utxo (example 500 ADA = 500,000,000 lovelace) : " amount
+ls -1 ${script_path}/*.plutus
+read -p "Insert plutus file name (example AlwaysSucceeds) : " script_file
+read -p "Insert redeemer value (example 42) : " redeemer_value
+
+echo_green "\n- Select a wallet to be used as tx-in and collateral"
+ls -1 ${key_path}/*.addr
+read -p "Insert wallet origin address (example payment1) : " wallet_origin
+${cardano_script_path}/query-utxo.sh ${wallet_origin}
+read -p "Insert TxHash : " txIn_origin
+read -p "Insert TxIx id : " txInId_origin
 
 read -p "Insert wallet destination address to pay (example payment2) : " wallet_dest
 
-ls -1 ${script_path}/*.plutus
-read -p "Insert plutus script name (example AlwaysSucceeds) : " script_file
-read -p "Insert redeemer value (example 42) : " redeemer_value
 
 echo_green "- Building transaction"
 ${cardanocli} transaction build \
