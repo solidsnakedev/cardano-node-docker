@@ -29,7 +29,7 @@ while read -r utxo; do
     utxo_balance=$(awk '{ print $3 }' <<< "${utxo}")
     total_balance=$((${total_balance}+${utxo_balance}))
     echo_green "TxHash: ${in_addr}#${idx}"
-    echo_green "ADA: ${utxo_balance}"
+    echo_green "Lovelace: ${utxo_balance}"
     tx_in="${tx_in} --tx-in ${in_addr}#${idx}"
     echo_green ${tx_in}
 done < ${data_path}/balance.out
