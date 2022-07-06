@@ -5,10 +5,9 @@ set -euo pipefail
 source common.sh
 
 #--------- Run program ---------
-echo_green "\n- Queryng protocol parameters ..."
+echo_green "- Queryng protocol parameters ..."
 ${cardanocli} query protocol-parameters \
   --testnet-magic $TESTNET_MAGIC \
-  --out-file ${data_path}/protocol.json
+  --out-file ${config_path}/protocol.json
 
-echo_green "protocol.json saved in : \n"
-ls ${data_path}/protocol.json
+echo_green "protocol.json saved in ${config_path}/protocol.json"

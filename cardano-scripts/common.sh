@@ -25,6 +25,7 @@ echo_yellow(){
 key_path="/node/keys"
 script_path="/node/scripts"
 data_path="/node/data"
+config_path="/node/configuration"
 cardano_script_path="/usr/local/bin"
 cardanocli="/usr/local/bin/cardano-cli"
 cardanonode="/usr/local/bin/cardano-node"
@@ -32,5 +33,5 @@ cardanonode="/usr/local/bin/cardano-node"
 #--------- Helper functions ---------
 #min_utxo=$(${cardanocli} transaction calculate-min-required-utxo \
 #    --babbage-era \
-#    --protocol-params-file ${data_path}/protocol.json \
+#    --protocol-params-file ${config_path}/protocol.json \
 #    --tx-out $(cat ${key_path}/${origin}.addr)+0 | awk '{print $2}')

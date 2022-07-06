@@ -8,10 +8,10 @@ echo_green "\nThis program requires 2 witnesses in order to create a native scri
 
 echo_green "\n- List of addresses" && ls -1 ${key_path}/*.addr
 
-read -p "Insert origin 1 address (example payment1) : " origin1
-read -p "Insert origin 2 address (example payment2) : " origin2 
+read -p "Insert origin 1 address (example payment1) : " wallet_origin1
+read -p "Insert origin 2 address (example payment2) : " wallet_origin2 
 
-echo_green "\n- Creating ${script_path}/multiSigPolicy.script"
+echo_green "- Creating ${script_path}/multiSigPolicy.script"
 
 cat > ${script_path}/multiSigPolicy.script << EOF
 {
@@ -20,11 +20,11 @@ cat > ${script_path}/multiSigPolicy.script << EOF
   [
     {
       "type": "sig",
-      "keyHash": "$(${cardanocli} address key-hash --payment-verification-key-file ${key_path}/${origin1}.vkey)"
+      "keyHash": "$(${cardanocli} address key-hash --payment-verification-key-file ${key_path}/${wallet_origin1}.vkey)"
     },
     {
       "type": "sig",
-      "keyHash": "$(${cardanocli} address key-hash --payment-verification-key-file ${key_path}/${origin2}.vkey)"
+      "keyHash": "$(${cardanocli} address key-hash --payment-verification-key-file ${key_path}/${wallet_origin2}.vkey)"
     }
   ]
 }
@@ -32,16 +32,16 @@ EOF
 
 cat ${script_path}/multiSigPolicy.script
 
-echo_green "\n- Creating ${key_path}/multiSigPolicy.addr"
+echo_green "- Creating ${key_path}/multiSigPolicy.addr"
 ${cardanocli} address build \
     --payment-script-file ${script_path}/multiSigPolicy.script \
     --testnet-magic $TESTNET_MAGIC \
     --out-file ${key_path}/multiSigPolicy.addr
 
-echo_green "\n- Send ADA to script? (y/n)"
+echo_green "- Send ADA to script? (y/n)"
 read ans
 if [[ ${ans} == "y" ]]; then
-  echo_green "\n- Now send ADA to the multiSigPolicy.addr"
+  echo_green "- Sending ADA to multiSigPolicy.addr"
   ${cardano_script_path}/pay-address.sh
   echo_green "Waiting for ~20 seconds so the transaction is in the blockchain."
   sleep 22
@@ -49,49 +49,49 @@ fi
 
 echo_green "\n- The following is used to consumed the utxo from the native script"
 
-echo_green "\n- Querying multiSigPolicy.addr utxos"
+echo_green "- Querying multiSigPolicy.addr utxos"
 
 ${cardano_script_path}/query-utxo.sh multiSigPolicy
 
 read -p "Insert tx-in : " txIn
 read -p "Insert tx-in id : " txInId
 
-echo_green "\n- Addresses" && ls -1 ${key_path}/*.addr
+echo_green "- Addresses" && ls -1 ${key_path}/*.addr
 echo_green " Note: tx-in consumed from multiSigPolicy and total amount is sent to change address"
-read -p "Insert change address (example payment3) : " change
+read -p "Insert change address (example payment3) : " wallet_change
 
-echo_green "\n- Building transaction"
+echo_green "- Building transaction"
 ${cardanocli} transaction build \
     --babbage-era \
     --tx-in "${txIn}#${txInId}" \
     --tx-in-script-file ${script_path}/multiSigPolicy.script \
-    --change-address $(cat ${key_path}/${change}.addr) \
+    --change-address $(cat ${key_path}/${wallet_change}.addr) \
     --witness-override 2 \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/mulsigpoltx.build
 
-echo_green "\n- Signing transaction witness 1"
+echo_green "- Signing transaction witness 1"
 ${cardanocli} transaction witness \
     --tx-body-file ${key_path}/mulsigpoltx.build \
-    --signing-key-file ${key_path}/${origin1}.skey \
+    --signing-key-file ${key_path}/${wallet_origin1}.skey \
     --testnet-magic ${TESTNET_MAGIC} \
-    --out-file ${key_path}/${origin1}.witness
+    --out-file ${key_path}/${wallet_origin1}.witness
 
-echo_green "\n- Signing transaction witness 2"
+echo_green "- Signing transaction witness 2"
 ${cardanocli} transaction witness \
     --tx-body-file ${key_path}/mulsigpoltx.build \
-    --signing-key-file ${key_path}/${origin2}.skey \
+    --signing-key-file ${key_path}/${wallet_origin2}.skey \
     --testnet-magic ${TESTNET_MAGIC} \
-    --out-file ${key_path}/${origin2}.witness
+    --out-file ${key_path}/${wallet_origin2}.witness
 
-echo_green "\n- Assembling transaction witness 1 and 2"
+echo_green "- Assembling transaction witness 1 and 2"
 ${cardanocli} transaction assemble \
     --tx-body-file ${key_path}/mulsigpoltx.build \
-    --witness-file ${key_path}/${origin1}.witness \
-    --witness-file ${key_path}/${origin2}.witness \
+    --witness-file ${key_path}/${wallet_origin1}.witness \
+    --witness-file ${key_path}/${wallet_origin2}.witness \
     --out-file ${key_path}/mulsigpoltx.signed
 
-echo_green "\n- Submiting transaction"
+echo_green "- Submiting transaction"
 ${cardanocli} transaction submit \
     --tx-file ${key_path}/mulsigpoltx.signed \
     --testnet-magic ${TESTNET_MAGIC}

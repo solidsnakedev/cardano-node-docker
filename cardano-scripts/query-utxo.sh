@@ -7,19 +7,18 @@ source common.sh
 if [[ -z $1 ]]
 then
     echo_green "\n- List of addresses :" && ls -1 ${key_path}/*.addr
-    read -p "Insert address (example payment1): " key
+    read -p "Insert wallet address (example payment1): " wallet
 else
-    key=$1
+    wallet=$1
 fi
 
-if [[ -e ${key_path}/${key}.addr ]]
+if [[ -e ${key_path}/${wallet}.addr ]]
 then
-    echo_green "\n- Address string value : $(cat ${key_path}/${key}.addr) "
-    echo_green "\n- Queryng adddress in cardano testnet ...\n"
+    echo_green "\n- Address string value : $(cat ${key_path}/${wallet}.addr) "
+    echo_green "- Queryng adddress in cardano testnet ...\n"
     ${cardanocli} query utxo \
       --testnet-magic $TESTNET_MAGIC \
-      --address $(cat ${key_path}/${key}.addr)
-    echo -e "\n"
+      --address $(cat ${key_path}/${wallet}.addr)
 else
-    echo_red  "\n- Address does not exists!\n"
+    echo_red  "- Address does not exists!\n"
 fi

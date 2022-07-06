@@ -5,7 +5,7 @@ set -euo pipefail
 source common.sh
 
 #--------- Run program ---------
-echo_green "- Generating dummy json file, saved in ${data_path}"
+echo_green "- Generating dummy json file"
 cat > ${data_path}/dummy.json << EOF
 {
   "0":
@@ -22,3 +22,5 @@ cat > ${data_path}/dummy.json << EOF
 EOF
 
 cat ${data_path}/dummy.json
+
+echo_green "dummy.json saved in ${data_path}/dummy.json"
