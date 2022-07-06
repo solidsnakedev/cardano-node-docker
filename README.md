@@ -91,14 +91,14 @@ query-tip.sh
 ```
 Example
 ```
-root@ee67eac03bec:/# query-tip.sh 
+root@a24cc0944179:/# query-tip.sh 
 {
-    "era": "Alonzo",
-    "syncProgress": "100.00",
-    "hash": "425cad2cb7e724ac0b6899b30a63dc7c7c0a2b53d6a043b950e16c2f30a2e753",
-    "epoch": 211,
-    "slot": 60843409,
-    "block": 3630484
+    "block": 3688353,
+    "epoch": 215,
+    "era": "Babbage",
+    "hash": "dc37225eae7cbf4c2eb241c8e1b70fd71e4937c581e76bb0e73e401251d64dd3",
+    "slot": 62766612,
+    "syncProgress": "100.00"
 }
 ```
 
