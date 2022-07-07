@@ -31,32 +31,32 @@ ${cardanocli} transaction build \
     --change-address $(cat ${key_path}/${wallet_change}.addr) \
     --witness-override 2 \
     --testnet-magic ${TESTNET_MAGIC} \
-    --out-file ${key_path}/multx.build
+    --out-file ${key_path}/multisig-tx.build
 
 echo_green "- Signing transaction witness 1"
 ${cardanocli} transaction witness \
-    --tx-body-file ${key_path}/multx.build \
+    --tx-body-file ${key_path}/multisig-tx.build \
     --signing-key-file ${key_path}/${wallet_origin1}.skey \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/${wallet_origin1}.witness
 
 echo_green "- Signing transaction witness 2"
 ${cardanocli} transaction witness \
-    --tx-body-file ${key_path}/multx.build \
+    --tx-body-file ${key_path}/multisig-tx.build \
     --signing-key-file ${key_path}/${wallet_origin2}.skey \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/${wallet_origin2}.witness
 
 echo_green "- Assembling transaction witness 1 and 2"
 ${cardanocli} transaction assemble \
-    --tx-body-file ${key_path}/multx.build \
+    --tx-body-file ${key_path}/multisig-tx.build \
     --witness-file ${key_path}/${wallet_origin1}.witness \
     --witness-file ${key_path}/${wallet_origin2}.witness \
-    --out-file ${key_path}/multx.signed
+    --out-file ${key_path}/multisig-tx.signed
 
 echo_green "- Submiting transaction"
 ${cardanocli} transaction submit \
-    --tx-file ${key_path}/multx.signed \
+    --tx-file ${key_path}/multisig-tx.signed \
     --testnet-magic ${TESTNET_MAGIC}
 
 echo_green "- Wait for ~20 seconds so the transaction is in the blockchain."
