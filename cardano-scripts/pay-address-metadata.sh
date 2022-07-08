@@ -14,7 +14,7 @@ read -p "Insert wallet origin address (example payment1) : " wallet_origin
 ${cardano_script_path}/query-utxo.sh ${wallet_origin}
 #--------- Get the total balance, and all utxos so they can be consumed when building the transaction ---------
 echo_green "- Getting all utxos from ${wallet_origin}"
-readarray results <<< "$(get_all_txin ${wallet_origin})"
+readarray results <<< "$(generate_UTXO ${wallet_origin})"
 #--------- Set total balance ---------
 total_balance=${results[0]}
 #--------- Set utxo inputs ---------
