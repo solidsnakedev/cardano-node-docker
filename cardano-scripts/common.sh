@@ -47,23 +47,25 @@ generate_UTXO() #Parameter1=Address
     local tx_in=""
     local total_balance=0
     local token_balance=0
-    local total_native_assets=""
+    local all_native_assets=""
     while read -r utxo; do
         in_addr=$(awk '{ print $1 }' <<< "${utxo}")
         idx=$(awk '{ print $2 }' <<< "${utxo}")
         utxo_balance=$(awk '{ print $3 }' <<< "${utxo}")
         token_balance=$(awk '{ print $6 }' <<< "${utxo}")
         token_policy_name=$(awk '{ print $7 }' <<< "${utxo}")
-        assets=$(awk '{for(i=6;i<=(NF-2);i++) printf("%s ", $i)}' <<< "${utxo}")
-        total_native_assets="${total_native_assets}${assets}"
+        assets=$(awk '{for(i=6;i<=(NF-2);i++) printf("%s ", $i)}' <<< "${utxo}") # Extract all native assets from colum 6 up to second last column
+        all_native_assets="${all_native_assets}${assets}"
         total_balance=$((${total_balance}+${utxo_balance}))
         tx_in="${tx_in} --tx-in ${in_addr}#${idx}"
     done < ${data_path}/balance.out
+    txcnt=$(cat ${data_path}/balance.out | wc -l)
     echo ${total_balance}
     echo ${tx_in}
+    echo ${txcnt}
     #echo ${token_balance}
     #echo ${token_policy_name}
-    echo ${total_native_assets}
+    echo ${all_native_assets}
 }
 
 generate_UTXO_Json()  #Parameter1=RawUTXO, Parameter2=Address
@@ -152,4 +154,26 @@ done < <(printf "${1}\n" | tail -n +3) #read in from parameter 1 (raw utxo) but 
   #close the whole json but delete the last char "," before that. do it only if there are entries present (length>1), else return an empty json
   if [[ ${#utxoJSON} -gt 1 ]]; then echo "${utxoJSON%?}}"; else echo "{}"; fi;
 
+}
+
+filter_asset() #Parameter1=All native assets #Parameter2=Asset name in hex
+{
+  local all_native_assets=${1}
+  local asset_name=${2}
+  IFS="+"
+  # Make an array with all native assets
+  read -ra assets_array <<< "${all_native_assets}"
+
+  # Loop and Save all arrays in one variable
+  assets=$(for val in "${assets_array[@]}";
+  do
+   echo "$val" | xargs
+  done
+  )
+  # Get token balance of the asset
+  echo $assets | grep -w ${asset_name} | awk '{print $1}'
+  # Get policy id plus asset name
+  echo $assets | grep -w ${asset_name} | awk '{print $2}'
+  # Get all the rest of the assets and concatenate them with "+", so it can be used in a transaction
+  echo $assets | grep -wv ${asset_name} | sed -z 's/\n/+/g;s/+$/\n/'
 }
