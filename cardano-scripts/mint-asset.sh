@@ -6,9 +6,21 @@ source common.sh
 
 #--------- Verify correct number of arguments  ---------
 if [[ "$#" -eq 0 || "$#" -ne 3 ]]; then echo_red "Error: Missing parameters" && echo_yellow "Info: Command example -> mint-asset.sh payment1 TOKENTEST 100 "; exit 1; fi
+
+#--------- Set wallet name  ---------
 wallet_origin=${1}
+
+#--------- Convert token name to Hex  ---------
+#Note: Since Cardano Node version 1.32.1
+#Asset Name Format Change. Note that asset names are now output in hex format when querying UTxO entries. 
+#Any user who is relying on asset names to be represented as ASCII text will need to change their tooling. 
+#As a temporary transitional solution, it is possible to use Cardano-cli version 1.31 with node version 1.32.1 if desired, or to continue to use node version 1.31.
+#This will not be possible following the next hard fork (which is expected in early 2022).
 token_name1=$(echo -n ${2} | xxd -ps | tr -d '\n')
+
 #token_name2=$(echo -n "SecondTesttoken" | xxd -ps | tr -d '\n')
+
+#--------- Set token amount to mint  ---------
 token_amount=${3}
 
 #--------- Verify if policy vkey exists ---------
@@ -37,18 +49,19 @@ echo_green "- Policy ID: ${asset_policy_id}"
 #--------- Query utxos from wallet ---------
 echo_green "- Queryng adddress: $(cat ${key_path}/${wallet_origin}.addr)"
 ${cardano_script_path}/query-utxo.sh ${wallet_origin}
+
 #--------- Get the total balance, and all utxos so they can be consumed when building the transaction ---------
 echo_green "- Getting all UTxO from ${wallet_origin}"
 readarray results <<< "$(generate_UTXO ${wallet_origin})"
+
 #--------- Set total balance ---------
 total_balance=${results[0]}
 #--------- Set utxo inputs ---------
 tx_in=${results[1]}
-#token_balance=${results[2]}
-#token_policy_name=${results[3]}
-total_native_assets=${results[2]}
-
-#min_amount="$(min_utxo ${wallet_origin})"
+#--------- Set number of utxos inputs ---------
+tx_cnt=${results[2]}
+#--------- Set all native assets ---------
+all_native_assets=${results[3]}
 
 min_amount=$(${cardanocli} transaction calculate-min-required-utxo \
     --babbage-era \
@@ -58,15 +71,35 @@ min_amount=$(${cardanocli} transaction calculate-min-required-utxo \
 
 echo_green "- Minimum UTxO: ${min_amount}"
 
-echo_green "- Building transaction"
-${cardanocli} transaction build \
+echo_green "- Building Raw transaction"
+${cardanocli} transaction build-raw \
     --babbage-era \
+    --fee 0 \
     ${tx_in} \
-    --tx-out $(cat ${key_path}/${wallet_origin}.addr)+${min_amount}+"${total_native_assets} + ${token_amount} ${asset_policy_id}.${token_name1}" \
-    --change-address $(cat ${key_path}/${wallet_origin}.addr) \
+    --tx-out "$(cat ${key_path}/${wallet_origin}.addr)+${total_balance}+${all_native_assets} + ${token_amount} ${asset_policy_id}.${token_name1}" \
     --mint="${token_amount} ${asset_policy_id}.${token_name1}" \
     --minting-script-file ${script_path}/mint-asset-policy.script \
+    --out-file ${key_path}/mint-asset-policy-tx.raw
+
+fee=$(${cardanocli} transaction calculate-min-fee \
+    --tx-body-file ${key_path}/mint-asset-policy-tx.raw \
+    --tx-in-count ${tx_cnt} \
+    --tx-out-count 1 \
+    --witness-count 1 \
     --testnet-magic ${TESTNET_MAGIC} \
+    --protocol-params-file ${config_path}/protocol.json | cut -d " " -f1)
+
+echo_green "- Calc fee: ${fee}"
+output_balance=$(expr ${total_balance} - ${fee})
+
+echo_green "- Building transaction"
+${cardanocli} transaction build-raw \
+    --babbage-era \
+    --fee ${fee} \
+    ${tx_in} \
+    --tx-out $(cat ${key_path}/${wallet_origin}.addr)+${output_balance}+"${all_native_assets} + ${token_amount} ${asset_policy_id}.${token_name1}" \
+    --mint="${token_amount} ${asset_policy_id}.${token_name1}" \
+    --minting-script-file ${script_path}/mint-asset-policy.script \
     --out-file ${key_path}/mint-asset-policy-tx.build
 
 echo_green "- Signing transaction"
