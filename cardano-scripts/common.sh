@@ -46,26 +46,21 @@ generate_UTXO() #Parameter1=Address
     #--------- Read balance.out file and compose utxo inputs ---------
     local tx_in=""
     local total_balance=0
-    local token_balance=0
-    local all_native_assets=""
+    local native_assets=""
     while read -r utxo; do
         in_addr=$(awk '{ print $1 }' <<< "${utxo}")
         idx=$(awk '{ print $2 }' <<< "${utxo}")
         utxo_balance=$(awk '{ print $3 }' <<< "${utxo}")
-        token_balance=$(awk '{ print $6 }' <<< "${utxo}")
-        token_policy_name=$(awk '{ print $7 }' <<< "${utxo}")
         assets=$(awk '{for(i=6;i<=(NF-2);i++) printf("%s ", $i)}' <<< "${utxo}") # Extract all native assets from colum 6 up to second last column
-        all_native_assets="${all_native_assets}${assets}"
-        total_balance=$((${total_balance}+${utxo_balance}))
+        native_assets="${native_assets}${assets}"
+        total_balance=$((total_balance+utxo_balance))
         tx_in="${tx_in} --tx-in ${in_addr}#${idx}"
     done < ${data_path}/balance.out
     txcnt=$(cat ${data_path}/balance.out | wc -l)
-    echo ${total_balance}
-    echo ${tx_in}
-    echo ${txcnt}
-    #echo ${token_balance}
-    #echo ${token_policy_name}
-    echo ${all_native_assets}
+    echo "${total_balance}"
+    echo "${tx_in}"
+    echo "${txcnt}"
+    echo "${native_assets}"
 }
 
 generate_UTXO_Json()  #Parameter1=RawUTXO, Parameter2=Address
@@ -158,14 +153,15 @@ done < <(printf "${1}\n" | tail -n +3) #read in from parameter 1 (raw utxo) but 
 
 filter_asset() #Parameter1=All native assets #Parameter2=Asset name in hex
 {
-  local all_native_assets=${1}
+  local native_assets=${1}
   local asset_name=${2}
   IFS="+"
   # Make an array with all native assets
-  read -ra assets_array <<< "${all_native_assets}"
+  read -ra assets_array <<< "${native_assets}"
 
   # Loop and Save all arrays in one variable
-  assets=$(for val in "${assets_array[@]}";
+  assets=$(
+  for val in "${assets_array[@]}";
   do
    echo "$val" | xargs
   done

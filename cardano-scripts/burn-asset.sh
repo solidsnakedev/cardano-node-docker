@@ -1,5 +1,5 @@
 #!/bin/bash
-set -uo pipefail
+Get -o pipefail
 
 #--------- Import common paths and functions ---------
 source common.sh
@@ -7,7 +7,7 @@ source common.sh
 #--------- Verify correct number of arguments  ---------
 if [[ "$#" -eq 0 || "$#" -ne 3 ]]; then echo_red "Error: Missing parameters" && echo_yellow "Info: Command example -> mint-asset.sh payment1 TOKENTEST 100 "; exit 1; fi
 
-#--------- Set wallet name  ---------
+#--------- Get wallet name  ---------
 wallet_origin=${1}
 
 #--------- Convert token name to Hex  ---------
@@ -18,7 +18,7 @@ wallet_origin=${1}
 #This will not be possible following the next hard fork (which is expected in early 2022).
 token_name1=$(echo -n ${2} | xxd -ps | tr -d '\n')
 
-#--------- Set token amount to burn  ---------
+#--------- Get token amount to burn  ---------
 amount_to_burn=${3}
 
 #--------- Verify if policy vkey exists ---------
@@ -50,26 +50,30 @@ ${cardano_script_path}/query-utxo.sh ${wallet_origin}
 #--------- Get the total balance, and all utxos so they can be consumed when building the transaction ---------
 echo_green "- Getting all UTxO from ${wallet_origin}"
 readarray results <<< "$(generate_UTXO ${wallet_origin})"
-#--------- Set total balance ---------
+#--------- Get total balance ---------
 total_balance=${results[0]}
-#--------- Set utxo inputs ---------
+#--------- Get utxo inputs ---------
 tx_in=${results[1]}
-#--------- Set number of utxos inputs ---------
+#--------- Get number of utxos inputs ---------
 tx_cnt=${results[2]}
-#--------- Set all native assets ---------
-all_native_assets=${results[3]}
+#--------- Get all native assets ---------
+native_assets=${results[3]}
 
 #--------- Filter native assets ---------
-readarray filter_asset_result <<< "$(filter_asset "${all_native_assets}" "${token_name1}")"
-#--------- Set filtered native asset balance ---------
+readarray filter_asset_result <<< "$(filter_asset "${native_assets}" "${token_name1}")"
+# Get filtered native asset balance
 native_asset_balance=${filter_asset_result[0]}
-#--------- Set filtered native asset name ---------
+# Get filtered native asset name ---------
 native_asset_name=${filter_asset_result[1]}
-#--------- Set remainders native assets ---------
+# Calculate change of the native asset to be burnt ---------
+native_asset_change=$((native_asset_balance - amount_to_burn))
+# Get remainders native assets ---------
 remainder_assets=${filter_asset_result[2]}
-
-#--------- Calculate change of the native asset to be burnt ---------
-native_asset_change=$(expr $native_asset_balance - ${amount_to_burn})
+if [[ -z ${remainder_assets} ]]; then
+all_native_assets="${native_asset_change} ${native_asset_name}"
+else
+all_native_assets="${remainder_assets} + ${native_asset_change} ${native_asset_name}"
+fi
 
 min_amount=$(${cardanocli} transaction calculate-min-required-utxo \
     --babbage-era \
@@ -85,7 +89,7 @@ ${cardanocli} transaction build-raw \
     --babbage-era \
     --fee 0 \
     ${tx_in} \
-    --tx-out "$(cat ${key_path}/${wallet_origin}.addr)+${total_balance}+${remainder_assets} + ${native_asset_change} ${native_asset_name}" \
+    --tx-out "$(cat ${key_path}/${wallet_origin}.addr)+${total_balance}+${all_native_assets}" \
     --mint="-${amount_to_burn} ${native_asset_name}" \
     --minting-script-file ${script_path}/mint-asset-policy.script \
     --out-file ${key_path}/mint-asset-policy-tx.raw
@@ -99,14 +103,14 @@ fee=$(${cardanocli} transaction calculate-min-fee \
     --protocol-params-file ${config_path}/protocol.json | cut -d " " -f1)
 
 echo_green "- Calc fee: ${fee}"
-output_balance=$(expr ${total_balance} - ${fee})
+final_balance=$((total_balance - fee))
 
 echo_green "- Building transaction"
 ${cardanocli} transaction build-raw \
     --babbage-era \
     --fee ${fee} \
     ${tx_in} \
-    --tx-out $(cat ${key_path}/${wallet_origin}.addr)+${output_balance}+"${remainder_assets} + ${native_asset_change} ${native_asset_name}" \
+    --tx-out "$(cat ${key_path}/${wallet_origin}.addr)+${final_balance}+${all_native_assets}" \
     --mint="-${amount_to_burn} ${native_asset_name}" \
     --minting-script-file ${script_path}/mint-asset-policy.script \
     --out-file ${key_path}/mint-asset-policy-tx.build
