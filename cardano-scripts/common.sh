@@ -20,6 +20,16 @@ echo_red(){
 echo_yellow(){
   echo -e "${IYellow}$1${Reset}"
 }
+info(){
+  echo -e "${IGreen}[INFO]: $1${Reset}"
+}
+error(){
+  echo -e "${IRed}[ERROR]: $1${Reset}"
+}
+debug(){
+  echo -e "${ICyan}[DEBUG]: $1${Reset}"
+}
+
 
 #--------- Set the Path to your folders and binaries ---------
 key_path="/node/keys"
