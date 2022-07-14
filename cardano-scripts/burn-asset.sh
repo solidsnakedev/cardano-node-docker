@@ -1,11 +1,11 @@
 #!/bin/bash
-Get -o pipefail
+set -o pipefail
 
 #--------- Import common paths and functions ---------
 source common.sh
 
 #--------- Verify correct number of arguments  ---------
-if [[ "$#" -eq 0 || "$#" -ne 3 ]]; then echo_red "Error: Missing parameters" && echo_yellow "Info: Command example -> mint-asset.sh payment1 TOKENTEST 100 "; exit 1; fi
+if [[ "$#" -eq 0 || "$#" -ne 4 ]]; then echo_red "Error: Missing parameters" && echo_yellow "Info: Command example -> burn-asset.sh <wallet-name> <token-name> <amount-to-burn> <policy-name> "; exit 1; fi
 
 #--------- Get wallet name  ---------
 wallet_origin=${1}
@@ -21,27 +21,25 @@ token_name1=$(echo -n ${2} | xxd -ps | tr -d '\n')
 #--------- Get token amount to burn  ---------
 amount_to_burn=${3}
 
+#--------- Get token policy name  ---------
+policy_name=${4}
+
 #--------- Verify if policy vkey exists ---------
 echo_green "- Verification keys found : "
-ls -1 ${key_path}/mint-asset-policy.vkey 2> /dev/null
+ls -1 ${key_path}/${policy_name}.vkey 2> /dev/null
 if [[ $? -ne 0 ]]; then 
 echo_red "Error: Verification key does not exists!"
-echo_yellow "Info: Please run ${cardano_script_path}/gen-key.sh mint-asset-policy\n"; exit 1; fi
+echo_yellow "Info: Please run ${cardano_script_path}/gen-key.sh ${policy_name}\n"; exit 1; fi
 
-#--------- Create policy script ---------
-echo_green "- Creating ${script_path}/mint-asset-policy.script"
-
-cat > ${script_path}/mint-asset-policy.script << EOF
-{
-  "type": "sig",
-  "keyHash": "$(${cardanocli} address key-hash --payment-verification-key-file ${key_path}/mint-asset-policy.vkey)"
-}
-EOF
-
-cat ${script_path}/mint-asset-policy.script
+#--------- Verify if policy script exists ---------
+echo_green "- Policy verification : "
+ls -1 ${script_path}/${policy_name}.script 2> /dev/null
+if [[ $? -ne 0 ]]; then 
+echo_red "Error: Policy script does not exists!"
+echo_yellow "Info: Please run gen-policy-asset.sh ${policy_name}\n"; exit 1; fi
 
 #--------- Compute policy id ---------
-asset_policy_id=$(${cardanocli} transaction policyid --script-file ${script_path}/mint-asset-policy.script)
+asset_policy_id=$(${cardanocli} transaction policyid --script-file ${script_path}/${policy_name}.script)
 echo_green "- Policy ID: ${asset_policy_id}"
 
 #--------- Query utxos from wallet ---------
@@ -78,7 +76,7 @@ fi
 min_amount=$(${cardanocli} transaction calculate-min-required-utxo \
     --babbage-era \
     --protocol-params-file ${config_path}/protocol.json \
-    --tx-out-reference-script-file ${script_path}/mint-asset-policy.script \
+    --tx-out-reference-script-file ${script_path}/${policy_name}.script \
     --tx-out $(cat ${key_path}/${wallet_origin}.addr)+0+"${amount_to_burn} ${asset_policy_id}.${token_name1}" | awk '{print $2}')
 
 echo_green "- Minimum UTxO: ${min_amount}"
@@ -91,14 +89,14 @@ ${cardanocli} transaction build-raw \
     ${tx_in} \
     --tx-out "$(cat ${key_path}/${wallet_origin}.addr)+${total_balance}+${all_native_assets}" \
     --mint="-${amount_to_burn} ${native_asset_name}" \
-    --minting-script-file ${script_path}/mint-asset-policy.script \
-    --out-file ${key_path}/mint-asset-policy-tx.raw
+    --minting-script-file ${script_path}/${policy_name}.script \
+    --out-file ${key_path}/${policy_name}-tx.raw
 
 fee=$(${cardanocli} transaction calculate-min-fee \
-    --tx-body-file ${key_path}/mint-asset-policy-tx.raw \
+    --tx-body-file ${key_path}/${policy_name}-tx.raw \
     --tx-in-count ${tx_cnt} \
     --tx-out-count 1 \
-    --witness-count 1 \
+    --witness-count 2 \
     --testnet-magic ${TESTNET_MAGIC} \
     --protocol-params-file ${config_path}/protocol.json | cut -d " " -f1)
 
@@ -112,20 +110,20 @@ ${cardanocli} transaction build-raw \
     ${tx_in} \
     --tx-out "$(cat ${key_path}/${wallet_origin}.addr)+${final_balance}+${all_native_assets}" \
     --mint="-${amount_to_burn} ${native_asset_name}" \
-    --minting-script-file ${script_path}/mint-asset-policy.script \
-    --out-file ${key_path}/mint-asset-policy-tx.build
+    --minting-script-file ${script_path}/${policy_name}.script \
+    --out-file ${key_path}/${policy_name}-tx.build
 
 echo_green "- Signing transaction"
 ${cardanocli} transaction sign \
-    --tx-body-file ${key_path}/mint-asset-policy-tx.build \
+    --tx-body-file ${key_path}/${policy_name}-tx.build \
     --signing-key-file ${key_path}/${wallet_origin}.skey \
-    --signing-key-file ${key_path}/mint-asset-policy.skey \
+    --signing-key-file ${key_path}/${policy_name}.skey \
     --testnet-magic ${TESTNET_MAGIC} \
-    --out-file ${key_path}/mint-asset-policy-tx.signed
+    --out-file ${key_path}/${policy_name}-tx.signed
 
 echo_green "- Submiting transaction"
 ${cardanocli} transaction submit \
-    --tx-file ${key_path}/mint-asset-policy-tx.signed \
+    --tx-file ${key_path}/${policy_name}-tx.signed \
     --testnet-magic ${TESTNET_MAGIC}
 
 echo_green "- Wait for ~20 seconds so the transaction is in the blockchain."
