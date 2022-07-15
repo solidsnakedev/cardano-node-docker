@@ -11,30 +11,25 @@ if [[ "$#" -eq 0 || "$#" -ne 4 ]]; then error "Missing parameters" && info "Comm
 
 # Get wallet name
 wallet_origin=${1}
-
-# Convert token name to Hex
-# Note that asset names are now output in hex format when querying UTxO entries.
+# Convert token name to Hex. Note that asset names are now output in hex format when querying UTxO entries.
 token_name=$(echo -n ${2} | xxd -ps | tr -d '\n')
-
 # Get token amount to burn
 amount_to_burn=${3}
-
 # Get token policy name
 policy_name=${4}
 
+# Verify if wallet skey exists
+info "Checking if ${wallet_origin}.skey exists"
+[[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${wallet_origin}.skey exists" || { error "${wallet_origin}.skey missing"; exit 1; }
+
 # Verify if policy vkey exists
-info "Verification keys found : "
-ls -1 ${key_path}/${policy_name}.vkey 2> /dev/null
-if [[ $? -ne 0 ]]; then 
-error "Verification key does not exists!"
-info "Please run ${cardano_script_path}/gen-key.sh ${policy_name}\n"; exit 1; fi
+info "Checking if ${policy_name}.vkey exists"
+[[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${policy_name}.vkey exists" || { error "${policy_name}.vkey missing"; exit 1; }
 
 # Verify if policy script exists
-info "Policy verification : "
-ls -1 ${script_path}/${policy_name}.script 2> /dev/null
-if [[ $? -ne 0 ]]; then 
-error "Policy script does not exists!"
-info "Please run gen-policy-asset.sh ${policy_name}\n"; exit 1; fi
+info "Checking if ${policy_name}.script exists"
+[[ -f ${script_path}/${policy_name}.script ]] && info "OK ${policy_name}.script exists" || { error "${policy_name}.script missing"; exit 1; }
+
 
 #--------- Run program ---------
 
