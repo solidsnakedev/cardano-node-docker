@@ -4,13 +4,26 @@ set -euo pipefail
 #--------- Import common paths and functions ---------
 source common.sh
 
-#--------- Run program ---------
-info "List of addresses"
-ls -1 ${key_path}/*.addr
+# Verify correct number of arguments  ---------
+if [[ "$#" -eq 0 || "$#" -ne 4 ]]; then error "Missing parameters" && info "Command example -> pay-plutus-script.sh <wallet-origin> <script-name> <amount> <datum> "; exit 1; fi
+# Get wallet name
+wallet_origin=${1}
+# Get plutus script name
+script_name=${2}
+# Get amount to send
+amount=${3}
+# Get datum value 
+datum_value=${4}
 
-read -p "Insert wallet origin address (example payment1) : " wallet_origin
-#read -p "Insert TxHash : " txIn
-#read -p "Insert TxIx id : " txInId
+# Verify if wallet skey exists
+info "Checking if ${wallet_origin}.skey exists"
+[[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${key_path}/${wallet_origin}.skey exists" || { error "${key_path}/${wallet_origin}.skey missing"; exit 1; }
+
+# Verify if plutus script exists
+info "Checking if ${script_name}.plutus exists"
+[[ -f ${script_path}/${script_name}.plutus ]] && info "OK ${script_path}/${script_name}.plutus exists" || { error "${script_path}/${script_name}.plutus missing"; exit 1; }
+
+#--------- Run program ---------
 
 # Query utxos
 ${cardano_script_path}/query-utxo.sh ${wallet_origin}
@@ -22,22 +35,14 @@ total_balance=${results[0]}
 # Set utxo inputs
 tx_in=${results[1]}
 
-info "Total Balance : ${total_balance}"
-read -p "Insert amount to send (example 500 ADA = 500,000,000 lovelace) : " amount
-
-ls -1 ${script_path}/*.plutus
-read -p "Insert plutus name (example AlwaysSucceeds) : " wallet_script
-read -p "Insert Datum value (example 6666) : " datum_value
-info "Calculating Datum Hash"
 datum_hash=$(${cardanocli} transaction hash-script-data --script-data-value ${datum_value})
 info "Datum Hash : ${datum_hash}"
 
-#--tx-in "${txIn}#${txInId}" \
 info "Building transaction"
 ${cardanocli} transaction build \
     --babbage-era \
     ${tx_in} \
-    --tx-out $(cat ${key_path}/${wallet_script}.addr)+${amount} \
+    --tx-out $(cat ${key_path}/${script_name}.addr)+${amount} \
     --tx-out-datum-hash ${datum_hash} \
     --change-address $(cat ${key_path}/${wallet_origin}.addr) \
     --testnet-magic ${TESTNET_MAGIC} \

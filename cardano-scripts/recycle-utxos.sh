@@ -4,14 +4,23 @@ set -euo pipefail
 #--------- Import common paths and functions ---------
 source common.sh
 
+# Verify correct number of arguments  ---------
+if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Command example -> recycle-utxo.sh <wallet-origin> "; exit 1; fi
+# Get wallet name
+wallet_origin=${1}
+
+# Verify if wallet skey exists
+info "Checking if ${wallet_origin}.skey exists"
+[[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${key_path}/${wallet_origin}.skey exists" || { error "${key_path}/${wallet_origin}.skey missing"; exit 1; }
+
+
 #--------- Run program ---------
-info "List of addresses" && ls -1 ${key_path}/*.addr
-read -p "Insert origin address (example payment1) : " origin
-${cardano_script_path}/query-utxo.sh ${origin}
+info "Queryng adddress: $(cat ${key_path}/${wallet_origin}.addr)"
+${cardano_script_path}/query-utxo.sh ${wallet_origin}
 
 #--------- Query utxos and save it in fullUtxo.out ---------
 ${cardanocli} query utxo \
-    --address $(cat ${key_path}/${origin}.addr) \
+    --address $(cat ${key_path}/${wallet_origin}.addr) \
     --testnet-magic ${TESTNET_MAGIC} > ${data_path}/fullUtxo.out
 
 #--------- Remove 3 first rows, and sort balance ---------
@@ -43,14 +52,14 @@ info "Building transaction"
 ${cardanocli} transaction build \
     --babbage-era \
     ${tx_in} \
-    --change-address $(cat ${key_path}/${origin}.addr) \
+    --change-address $(cat ${key_path}/${wallet_origin}.addr) \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/tx.build
 
 info "Signing transaction"
 ${cardanocli} transaction sign \
     --tx-body-file ${key_path}/tx.build \
-    --signing-key-file ${key_path}/${origin}.skey \
+    --signing-key-file ${key_path}/${wallet_origin}.skey \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/tx.signed
 

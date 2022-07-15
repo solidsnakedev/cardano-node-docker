@@ -13,11 +13,8 @@ if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Comm
 policy_name=${1}
 
 # Verify if policy vkey exists
-info "Verification keys found : "
-ls -1 ${key_path}/${policy_name}.vkey 2> /dev/null
-if [[ $? -ne 0 ]]; then 
-error "Verification key does not exists!"
-info "Please run ${cardano_script_path}/gen-key.sh ${policy_name}\n"; exit 1; fi
+info "Checking if ${policy_name}.vkey exists"
+[[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${key_path}/${policy_name}.vkey exists" || { error "${key_path}/${policy_name}.vkey missing"; exit 1; }
 
 #--------- Run program ---------
 
@@ -43,3 +40,5 @@ cat > ${script_path}/${policy_name}.script << EOF
   ]
 }
 EOF
+
+cat ${script_path}/${policy_name}.script

@@ -25,19 +25,18 @@ policy_name=${4}
 # Get slot number from policy script/
 slot_number=${5}
 
+# Verify if wallet skey exists
+info "Checking if ${wallet_origin}.skey exists"
+[[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${key_path}/${wallet_origin}.skey exists" || { error "${key_path}/${wallet_origin}.skey missing"; exit 1; }
+
 # Verify if policy vkey exists
-info "Verification keys found : "
-ls -1 ${key_path}/${policy_name}.vkey 2> /dev/null
-if [[ $? -ne 0 ]]; then 
-error "Verification key does not exists!"
-info "Please run ${cardano_script_path}/gen-key.sh ${policy_name}\n"; exit 1; fi
+info "Checking if ${policy_name}.vkey exists"
+[[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${key_path}/${policy_name}.vkey exists" || { error "${key_path}/${policy_name}.vkey missing"; exit 1; }
 
 # Verify if policy script exists
-info "Policy verification : "
-ls -1 ${script_path}/${policy_name}.script 2> /dev/null
-if [[ $? -ne 0 ]]; then 
-error "Policy script does not exists!"
-info "Please run gen-policy-asset.sh or gen-policy-nft.sh ${policy_name}\n"; exit 1; fi
+info "Checking if ${policy_name}.script exists"
+[[ -f ${script_path}/${policy_name}.script ]] && info "OK ${script_path}/${policy_name}.script exists" || { error "${script_path}/${policy_name}.script missing"; exit 1; }
+
 
 #--------- Run program ---------
 

@@ -4,13 +4,20 @@ set -euo pipefail
 #--------- Import common paths and functions ---------
 source common.sh
 
-#--------- Run program
+# Verify correct number of arguments  ---------
+if [[ "$#" -eq 0 || "$#" -ne 3 ]]; then error "Missing parameters" && info "Command example -> pay-address.sh <wallet-origin> <wallet-destination> <amount> "; exit 1; fi
+# Get wallet name
+wallet_origin=${1}
+# Get wallet destination
+wallet_dest=${2}
+# Get amount to send
+amount=${3}
 
-# Select Wallet
-info "List of Addresses" && ls -1 ${key_path}/*.addr
-read -p "Insert wallet origin address (example payment1) : " wallet_origin
-#read -p "Insert tx-in : " txIn
-#read -p "Insert tx-in id : " txInId
+# Verify if wallet skey exists
+info "Checking if ${wallet_origin}.skey exists"
+[[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${key_path}/${wallet_origin}.skey exists" || { error "${key_path}/${wallet_origin}.skey missing"; exit 1; }
+
+#--------- Run program
 
 # Query utxos
 ${cardano_script_path}/query-utxo.sh ${wallet_origin}
@@ -22,19 +29,12 @@ total_balance=${results[0]}
 # Set utxo inputs
 tx_in=${results[1]}
 
-info "Total Balance : ${total_balance}"
-read -p "Insert amount to send (example 500 ADA = 500,000,000 lovelace) : " amount
-read -p "Insert wallet change address (example payment1) : " wallet_change
-read -p "Insert wallet destination address to pay (example payment2) : " wallet_dest
-
- #--tx-in "${txIn}#${txInId}" \
-
 info "Building transaction"
 ${cardanocli} transaction build \
     --babbage-era \
     ${tx_in} \
     --tx-out $(cat ${key_path}/${wallet_dest}.addr)+${amount} \
-    --change-address $(cat ${key_path}/${wallet_change}.addr) \
+    --change-address $(cat ${key_path}/${wallet_origin}.addr) \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/tx.build
 

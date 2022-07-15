@@ -3,12 +3,23 @@
 #--------- Import common paths and functions ---------
 source common.sh
 
+# Verify correct number of arguments  ---------
+if [[ "$#" -eq 0 || "$#" -ne 2 ]]; then error "Missing parameters" && info "Command example -> pay-address-metadata.sh <wallet-name> <json-file>"; exit 1; fi
+
+# Get wallet name
+wallet_origin=${1}
+# Get json file name
+json_file=${2}
+
+# Verify if wallet skey exists
+info "Checking if ${wallet_origin}.skey exists"
+[[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${key_path}/${wallet_origin}.skey exists" || { error "${key_path}/${wallet_origin}.skey missing"; exit 1; }
+
+# Verify if json file exists
+info "Checking if ${json_file}.json exists"
+[[ -f ${data_path}/${json_file}.json ]] && info "OK ${data_path}/${json_file}.json exists" || { error "${data_path}/${json_file}.json missing"; exit 1; }
+
 #--------- Run program ---------
-info "The following transaction includes metadata . \nThe origin and change address are the same"
-info "List of addresses" && ls -1 ${key_path}/*.addr
-read -p "Insert wallet origin address (example payment1) : " wallet_origin
-#read -p "Insert tx-in : " txIn
-#read -p "Insert tx-in id : " txInId
 
 # Query utxos
 ${cardano_script_path}/query-utxo.sh ${wallet_origin}
@@ -20,19 +31,13 @@ total_balance=${results[0]}
 # Set utxo inputs
 tx_in=${results[1]}
 
-# Listing json file to be sent
-ls -1 ${data_path}/*.json 2> /dev/null
-if [[ $? -ne 0 ]]; then error "Json file missing!. Create a Json file or run script gen-dummy-json.sh"; exit 1; fi
 
-read -p "Insert json file name (example dummy): " jsonfile
-
-#--tx-in "${txIn}#${txInId}" \
 info "Building transaction \n  Note: wallet origin and change address are the same"
 ${cardanocli} transaction build \
     --babbage-era \
     ${tx_in} \
     --change-address $(cat ${key_path}/${wallet_origin}.addr) \
-    --metadata-json-file ${data_path}/${jsonfile}.json \
+    --metadata-json-file ${data_path}/${json_file}.json \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/metadata-tx.build
 

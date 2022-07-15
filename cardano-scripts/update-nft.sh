@@ -8,20 +8,15 @@ source common.sh
 
 # Verify correct number of arguments
 if [[ "$#" -eq 0 || "$#" -ne 5 ]]; then error "Missing parameters" && info "Command example -> update-asset.sh <wallet-name> <token-name> <amount-to-burn> <policy-name> <slot-number> "; exit 1; fi
-
 # Get wallet name
 wallet_origin=${1}
-
 # Convert token name to Hex
 # Note that asset names are now output in hex format when querying UTxO entries.
 token_name=$(echo -n ${2} | xxd -ps | tr -d '\n')
-
 # Get token amount to burn
 amount_to_burn=${3}
-
 # Get token amount to burn
 policy_name=${4}
-
 # Get slot number from policy script/
 slot_number=${5}
 
@@ -71,10 +66,10 @@ remainder_assets=${filter_asset_result[2]}
 # Construct assets for tx outputs
 if [[ -z ${remainder_assets} ]]; then
 all_native_assets="${native_asset_change} ${native_asset_name}"
-echo ${all_native_assets}
+info ${all_native_assets}
 else
 all_native_assets="${remainder_assets} + ${native_asset_change} ${native_asset_name}"
-echo ${all_native_assets}
+info ${all_native_assets}
 fi
 
 min_amount=$(${cardanocli} transaction calculate-min-required-utxo \

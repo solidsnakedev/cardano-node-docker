@@ -4,19 +4,22 @@ set -euo pipefail
 #--------- Import common paths and functions ---------
 source common.sh
 
-#--------- Run program ---------
-info "Scripts found" && ls -1 ${script_path}/*.plutus
-read -p "Insert plutus script name (example AlwaysSucced): " script
+# Verify correct number of arguments  ---------
+if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Command example -> build-address-script.sh <script-name>"; exit 1; fi
 
-if [[ -e ${script_path}/${script}.plutus ]]
-then
-    info "Creating/Deriving cardano address from plutus script"
-    ${cardanocli} address build \
-        --payment-script-file ${script_path}/${script}.plutus \
-        --testnet-magic ${TESTNET_MAGIC} \
-        --out-file ${key_path}/${script}.addr
-    info "Plutus script address created $(ls ${key_path}/${script}.addr) \n"
-else
-    error "Plutus script does not exists!\n"
-    info "Please build a plutus script\n"
-fi
+# Get wallet name
+script_name=${1}
+
+# Verify if plutus script exists
+info "Checking if ${script_name}.plutus exists"
+[[ -f ${script_path}/${script_name}.plutus ]] && info "OK ${script_path}/${script_name}.plutus exists" || { error "${script_path}/${script_name}.plutus missing"; exit 1; }
+
+
+#--------- Run program ---------
+
+info "Creating/Deriving cardano address from plutus script"
+${cardanocli} address build \
+    --payment-script-file ${script_path}/${script_name}.plutus \
+    --testnet-magic ${TESTNET_MAGIC} \
+    --out-file ${key_path}/${script_name}.addr
+info "Plutus script address created ${key_path}/${script_name}.addr)"
