@@ -4,10 +4,13 @@ set -o pipefail
 #--------- Import common paths and functions ---------
 source common.sh
 
-#--------- Run program ---------
+#--------- Verification  ---------
 
+# Verify correct number of arguments
 if [[ "$#" -eq 0 ]]; then echo_red "Error: Missing parameters" && echo_yellow "Info: Command example -> gen-key.sh payment1 stake1 | gen-key.sh payment1"; exit 1; fi
 payment=${1}
+
+#--------- Run program ---------
 
 ${cardanocli} address key-gen \
     --verification-key-file ${key_path}/${payment}.vkey \

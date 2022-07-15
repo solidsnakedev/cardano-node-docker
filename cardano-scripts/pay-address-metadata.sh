@@ -10,17 +10,17 @@ read -p "Insert wallet origin address (example payment1) : " wallet_origin
 #read -p "Insert tx-in : " txIn
 #read -p "Insert tx-in id : " txInId
 
-#--------- Query utxos ---------
+# Query utxos
 ${cardano_script_path}/query-utxo.sh ${wallet_origin}
-#--------- Get the total balance, and all utxos so they can be consumed when building the transaction ---------
+# Get the total balance, and all utxos so they can be consumed when building the transaction
 info "Getting all utxos from ${wallet_origin}"
 readarray results <<< "$(generate_UTXO ${wallet_origin})"
-#--------- Set total balance ---------
+# Set total balance
 total_balance=${results[0]}
-#--------- Set utxo inputs ---------
+# Set utxo inputs
 tx_in=${results[1]}
 
-#--------- Listing json file to be sent ---------
+# Listing json file to be sent
 ls -1 ${data_path}/*.json 2> /dev/null
 if [[ $? -ne 0 ]]; then echo_red "Error: Json file missing!. Create a Json file or run script gen-dummy-json.sh"; exit 1; fi
 

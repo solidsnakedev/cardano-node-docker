@@ -4,13 +4,15 @@ set -o pipefail
 #--------- Import common paths and functions ---------
 source common.sh
 
-#--------- Verify correct number of arguments  ---------
+#--------- Verification  ---------
+
+# Verify correct number of arguments
 if [[ "$#" -eq 0 || "$#" -ne 4 ]]; then echo_red "Error: Missing parameters" && echo_yellow "Info: Command example -> mint-asset.sh <wallet-name> <token-name> <amount> <policy-name>"; exit 1; fi
 
-#--------- Get wallet name  ---------
+# Get wallet name
 wallet_origin=${1}
 
-#--------- Convert token name to Hex  ---------
+# Convert token name to Hex
 #Note: Since Cardano Node version 1.32.1
 #Asset Name Format Change. Note that asset names are now output in hex format when querying UTxO entries. 
 #Any user who is relying on asset names to be represented as ASCII text will need to change their tooling. 
@@ -20,40 +22,40 @@ token_name1=$(echo -n ${2} | xxd -ps | tr -d '\n')
 
 #token_name2=$(echo -n "SecondTesttoken" | xxd -ps | tr -d '\n')
 
-#--------- Get token amount to mint  ---------
+# Get token amount to mint
 token_amount=${3}
 
 policy_name=${4}
 
-#--------- Verify if policy vkey exists ---------
+# Verify if policy vkey exists
 info "Checking if ${policy_name}.vkey exists"
 [[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${key_path}/${policy_name}.vkey exists" || { error "${key_path}/${policy_name}.vkey missing"; exit 1; }
 
-#--------- Verify if policy script exists ---------
+# Verify if policy script exists
 info "Checking if ${policy_name}.script exists"
 [[ -f ${script_path}/${policy_name}.script ]] && info "OK ${script_path}/${policy_name}.script exists" || { error "${script_path}/${policy_name}.script missing"; exit 1; }
 
 #--------- Run program ---------
 
-#--------- Compute policy id ---------
+# Compute policy id
 asset_policy_id=$(${cardanocli} transaction policyid --script-file ${script_path}/${policy_name}.script)
 info "Policy ID: ${asset_policy_id}"
 
-#--------- Query utxos from wallet ---------
+# Query utxos from wallet
 info "Queryng adddress: $(cat ${key_path}/${wallet_origin}.addr)"
 ${cardano_script_path}/query-utxo.sh ${wallet_origin}
 
-#--------- Get the total balance, and all utxos so they can be consumed when building the transaction ---------
+# Get the total balance, and all utxos so they can be consumed when building the transaction
 info "Getting all UTxO from ${wallet_origin}"
 readarray results <<< "$(generate_UTXO "${wallet_origin}")"
 
-#--------- Get total balance ---------
+# Get total balance
 total_balance=${results[0]}
-#--------- Get utxo inputs ---------
+# Get utxo inputs
 tx_in=${results[1]}
-#--------- Get number of utxos inputs ---------
+# Get number of utxos inputs
 tx_cnt=${results[2]}
-#--------- Get all native assets ---------
+# Get all native assets
 native_assets=${results[3]}
 if [[ -z "${native_assets}" ]]; then
 all_native_assets="${token_amount} ${asset_policy_id}.${token_name1}"

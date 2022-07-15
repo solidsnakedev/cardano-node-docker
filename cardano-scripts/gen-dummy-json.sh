@@ -5,6 +5,7 @@ set -euo pipefail
 source common.sh
 
 #--------- Run program ---------
+
 info "Generating dummy json file"
 cat > ${data_path}/dummy.json << EOF
 {

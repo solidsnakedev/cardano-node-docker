@@ -4,22 +4,24 @@ set -o pipefail
 #--------- Import common paths and functions ---------
 source common.sh
 
-#--------- Verify correct number of arguments  ---------
+#--------- Verification  ---------
+
+# Verify correct number of arguments
 if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then echo_red "Error: Missing parameters" && echo_yellow "Info: Command example -> gen-policy-nft.sh <policy-name> "; exit 1; fi
 
-#--------- Run program ---------
-
-#--------- Get token policy name  ---------
+# Get token policy name
 policy_name=${1}
 
-#--------- Verify if policy vkey exists ---------
+# Verify if policy vkey exists
 info "Verification keys found : "
 ls -1 ${key_path}/${policy_name}.vkey 2> /dev/null
 if [[ $? -ne 0 ]]; then 
 echo_red "Error: Verification key does not exists!"
 echo_yellow "Info: Please run ${cardano_script_path}/gen-key.sh ${policy_name}\n"; exit 1; fi
 
-#--------- Create policy script ---------
+#--------- Run program ---------
+
+# Create policy script
 info "Creating ${script_path}/${policy_name}.script"
 
 slot_number=$(expr $(${cardanocli} query tip --testnet-magic ${TESTNET_MAGIC} | jq .slot?) + 10000)
