@@ -64,14 +64,16 @@ all_native_assets="${native_asset_change} ${native_asset_name}"
 else
 all_native_assets="${remainder_assets} + ${native_asset_change} ${native_asset_name}"
 fi
+info "Asset to be burned: ${native_asset_name}"
+info "Asset change: ${native_asset_change}"
 
-min_amount=$(${cardanocli} transaction calculate-min-required-utxo \
-    --babbage-era \
-    --protocol-params-file ${config_path}/protocol.json \
-    --tx-out-reference-script-file ${script_path}/${policy_name}.script \
-    --tx-out $(cat ${key_path}/${wallet_origin}.addr)+0+"${amount_to_burn} ${asset_policy_id}.${token_name}" | awk '{print $2}')
-
-info "Minimum UTxO: ${min_amount}"
+#min_amount=$(${cardanocli} transaction calculate-min-required-utxo \
+#    --babbage-era \
+#    --protocol-params-file ${config_path}/protocol.json \
+#    --tx-out-reference-script-file ${script_path}/${policy_name}.script \
+#    --tx-out $(cat ${key_path}/${wallet_origin}.addr)+0+"${amount_to_burn} ${asset_policy_id}.${token_name}" | awk '{print $2}')
+#
+#info "Minimum UTxO: ${min_amount}"
 
 
 info "Building Raw transaction"
@@ -93,7 +95,10 @@ fee=$(${cardanocli} transaction calculate-min-fee \
     --protocol-params-file ${config_path}/protocol.json | cut -d " " -f1)
 
 info "Calc fee: ${fee}"
+
 final_balance=$((total_balance - fee))
+info "Final balance: ${final_balance}"
+
 
 info "Building transaction"
 ${cardanocli} transaction build-raw \

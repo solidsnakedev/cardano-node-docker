@@ -15,7 +15,7 @@ json_file=${2}
 [[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${wallet_origin}.skey exists" || { error "${wallet_origin}.skey missing"; exit 1; }
 
 # Verify if json file exists
-[[ -f ${data_path}/${json_file}.json ]] && info "OK ${data_path}/${json_file}.json exists" || { error "${data_path}/${json_file}.json missing"; exit 1; }
+[[ -f ${data_path}/${json_file}.json ]] && info "OK ${json_file}.json exists" || { error "${json_file}.json missing"; exit 1; }
 
 #--------- Run program ---------
 

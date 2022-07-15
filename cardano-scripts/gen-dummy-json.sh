@@ -24,4 +24,4 @@ EOF
 
 cat ${data_path}/dummy.json
 
-info "dummy.json saved in ${data_path}/dummy.json"
+info "dummy.json saved in ${data_path}/"

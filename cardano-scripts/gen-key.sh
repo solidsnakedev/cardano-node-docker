@@ -16,7 +16,7 @@ ${cardanocli} address key-gen \
     --verification-key-file ${key_path}/${wallet_name}.vkey \
     --signing-key-file ${key_path}/${wallet_name}.skey
 
-info "Keys saved in ${key_path}/${wallet_name}.vkey and ${key_path}/${wallet_name}.skey "
+info "Keys ${wallet_name}.vkey and ${wallet_name}.skey saved in ${key_path}/"
 
 if [[ -z ${2} ]]; then exit 0; fi
 stake_name=${2}
@@ -25,4 +25,4 @@ ${cardanocli} stake-address key-gen \
     --verification-key-file ${key_path}/${stake_name}.vkey \
     --signing-key-file ${key_path}/${stake_name}.skey
 
-info "Keys saved in ${key_path}/${stake_name}.vkey and ${key_path}/${stake_name}.skey"
+info "Keys ${stake_name}.vkey and ${stake_name}.skey saved in ${key_path}/"
