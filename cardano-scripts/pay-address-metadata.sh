@@ -22,7 +22,7 @@ tx_in=${results[1]}
 
 # Listing json file to be sent
 ls -1 ${data_path}/*.json 2> /dev/null
-if [[ $? -ne 0 ]]; then echo_red "Error: Json file missing!. Create a Json file or run script gen-dummy-json.sh"; exit 1; fi
+if [[ $? -ne 0 ]]; then error "Json file missing!. Create a Json file or run script gen-dummy-json.sh"; exit 1; fi
 
 read -p "Insert json file name (example dummy): " jsonfile
 

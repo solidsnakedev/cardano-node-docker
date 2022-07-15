@@ -13,7 +13,7 @@ info "Datum Hash : ${datum_hash}"
 read -p "Insert wallet script address (example AlwaysSucceeds) : " wallet_script
 info "Querying script utxo and filter by Datum Hash"
 ${cardano_script_path}/query-utxo.sh ${wallet_script} | grep ${datum_hash}
-if [[ $? -ne 0 ]]; then echo_red "Error: Could not find Datum Hash in script utxos!. Insert a different Datum value"; exit 1; fi
+if [[ $? -ne 0 ]]; then error "Could not find Datum Hash in script utxos!. Insert a different Datum value"; exit 1; fi
 
 read -p "Insert TxHash from script utxo: " txIn_script
 read -p "Insert TxIx id from script utxo: " txInId_script

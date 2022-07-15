@@ -7,7 +7,7 @@ source common.sh
 #--------- Verification  ---------
 
 # Verify correct number of arguments
-if [[ "$#" -eq 0 ]]; then echo_red "Error: Missing parameters" && echo_yellow "Info: Command example -> gen-key.sh payment1 stake1 | gen-key.sh payment1"; exit 1; fi
+if [[ "$#" -eq 0 ]]; then error "Missing parameters" && echo_yellow "Info: Command example -> gen-key.sh payment1 stake1 | gen-key.sh payment1"; exit 1; fi
 payment=${1}
 
 #--------- Run program ---------

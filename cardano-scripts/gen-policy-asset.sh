@@ -7,7 +7,7 @@ source common.sh
 #--------- Verification  ---------
 
 # Verify correct number of arguments
-if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then echo_red "Error: Missing parameters" && echo_yellow "Info: Command example -> gen-policy-asset.sh <policy-name> "; exit 1; fi
+if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && echo_yellow "Info: Command example -> gen-policy-asset.sh <policy-name> "; exit 1; fi
 
 # Get token policy name
 policy_name=${1}
@@ -16,7 +16,7 @@ policy_name=${1}
 info "Verification keys found : "
 ls -1 ${key_path}/${policy_name}.vkey 2> /dev/null
 if [[ $? -ne 0 ]]; then 
-echo_red "Error: Verification key does not exists!"
+error "Verification key does not exists!"
 echo_yellow "Info: Please run ${cardano_script_path}/gen-key.sh ${policy_name}\n"; exit 1; fi
 
 #--------- Run program ---------
