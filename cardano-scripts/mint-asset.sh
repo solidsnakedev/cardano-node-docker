@@ -7,7 +7,7 @@ source common.sh
 #--------- Verification  ---------
 
 # Verify correct number of arguments
-if [[ "$#" -eq 0 || "$#" -ne 4 ]]; then error "Missing parameters" && echo_yellow "Info: Command example -> mint-asset.sh <wallet-name> <token-name> <amount> <policy-name>"; exit 1; fi
+if [[ "$#" -eq 0 || "$#" -ne 4 ]]; then error "Missing parameters" && info "Command example -> mint-asset.sh <wallet-name> <token-name> <amount> <policy-name>"; exit 1; fi
 
 # Get wallet name
 wallet_origin=${1}
