@@ -5,7 +5,7 @@ set -euo pipefail
 source common.sh
 
 # Verify correct number of arguments  ---------
-if [[ "$#" -eq 0 || "$#" -ne 2 ]]; then error "Missing parameters" && info "Command example -> build-address.sh <wallet-name> <stake-name>"; exit 1; fi
+if [[ "$#" -eq 0 || "$#" -ne 2 ]]; then error "Missing parameters" && info "Usage: build-address.sh <wallet-name> <stake-name>"; exit 1; fi
 
 # Get wallet name
 wallet_name=${1}

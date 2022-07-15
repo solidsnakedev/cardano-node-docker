@@ -5,7 +5,7 @@ set -euo pipefail
 source common.sh
 
 # Verify correct number of arguments  ---------
-if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Command example -> recycle-utxo.sh <wallet-origin> "; exit 1; fi
+if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Usage: recycle-utxo.sh <wallet-origin> "; exit 1; fi
 # Get wallet name
 wallet_origin=${1}
 

@@ -7,7 +7,7 @@ source common.sh
 #--------- Verification  ---------
 
 # Verify correct number of arguments
-if [[ "$#" -eq 0 || "$#" -ne 5 ]]; then error "Missing parameters" && info "Command example -> update-asset.sh <wallet-name> <token-name> <amount-to-burn> <policy-name> <slot-number> "; exit 1; fi
+if [[ "$#" -eq 0 || "$#" -ne 5 ]]; then error "Missing parameters" && info "Usage: update-asset.sh <wallet-name> <token-name> <amount-to-burn> <policy-name> <slot-number> "; exit 1; fi
 # Get wallet name
 wallet_origin=${1}
 # Convert token name to Hex

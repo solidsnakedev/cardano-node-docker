@@ -7,7 +7,7 @@ source common.sh
 #--------- Verification  ---------
 
 # Verify correct number of arguments
-if [[ "$#" -eq 0 ]]; then error "Missing parameters" && info "Command example -> gen-key.sh <wallet-name> <stake-name> | gen-key.sh <wallet-name>"; exit 1; fi
+if [[ "$#" -eq 0 ]]; then error "Missing parameters" && info "Usage: gen-key.sh <wallet-name> <stake-name> | gen-key.sh <wallet-name>"; exit 1; fi
 wallet_name=${1}
 
 #--------- Run program ---------

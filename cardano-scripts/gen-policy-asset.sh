@@ -7,7 +7,7 @@ source common.sh
 #--------- Verification  ---------
 
 # Verify correct number of arguments
-if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Command example -> gen-policy-asset.sh <policy-name> "; exit 1; fi
+if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Usage: gen-policy-asset.sh <policy-name> "; exit 1; fi
 
 # Get token policy name
 policy_name=${1}

@@ -5,7 +5,7 @@ set -euo pipefail
 source common.sh
 
 # Verify correct number of arguments  ---------
-if [[ "$#" -eq 0 || "$#" -ne 3 ]]; then error "Missing parameters" && info "Command example -> pay-address.sh <wallet-origin> <wallet-destination> <amount> "; exit 1; fi
+if [[ "$#" -eq 0 || "$#" -ne 3 ]]; then error "Missing parameters" && info "Usage: pay-address.sh <wallet-origin> <wallet-destination> <amount> "; exit 1; fi
 # Get wallet name
 wallet_origin=${1}
 # Get wallet destination

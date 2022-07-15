@@ -4,7 +4,7 @@
 source common.sh
 
 # Verify correct number of arguments  ---------
-if [[ "$#" -eq 0 || "$#" -ne 2 ]]; then error "Missing parameters" && info "Command example -> pay-address-metadata.sh <wallet-name> <json-file>"; exit 1; fi
+if [[ "$#" -eq 0 || "$#" -ne 2 ]]; then error "Missing parameters" && info "Usage: pay-address-metadata.sh <wallet-name> <json-file>"; exit 1; fi
 
 # Get wallet name
 wallet_origin=${1}

@@ -5,7 +5,7 @@ set -euo pipefail
 source common.sh
 
 # Verify correct number of arguments  ---------
-if [[ "$#" -eq 0 || "$#" -ne 4 ]]; then error "Missing parameters" && info "Command example -> pay-plutus-script.sh <wallet-origin> <script-name> <amount> <datum> "; exit 1; fi
+if [[ "$#" -eq 0 || "$#" -ne 4 ]]; then error "Missing parameters" && info "Usage: pay-plutus-script.sh <wallet-origin> <script-name> <amount> <datum> "; exit 1; fi
 # Get wallet name
 wallet_origin=${1}
 # Get plutus script name
