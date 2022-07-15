@@ -15,7 +15,7 @@ wallet_origin=${1}
 # Convert token name to Hex 
 # Note that asset names are now output in hex format when querying UTxO entries.
 real_token_name=${2}
-token_name1=$(echo -n ${real_token_name} | xxd -ps | tr -d '\n')
+token_name=$(echo -n ${real_token_name} | xxd -ps | tr -d '\n')
 
 # Get token amount to mint 
 token_amount=${3}
@@ -110,16 +110,16 @@ tx_cnt=${results[2]}
 # Get all native assets
 native_assets=${results[3]}
 if [[ -z "${native_assets}" ]]; then
-all_native_assets="${token_amount} ${asset_policy_id}.${token_name1}"
+all_native_assets="${token_amount} ${asset_policy_id}.${token_name}"
 else
-all_native_assets="${native_assets} + ${token_amount} ${asset_policy_id}.${token_name1}" 
+all_native_assets="${native_assets} + ${token_amount} ${asset_policy_id}.${token_name}" 
 fi
 
 min_amount=$(${cardanocli} transaction calculate-min-required-utxo \
     --babbage-era \
     --protocol-params-file ${config_path}/protocol.json \
     --tx-out-reference-script-file ${script_path}/${policy_name}.script \
-    --tx-out $(cat ${key_path}/${wallet_origin}.addr)+0+"${token_amount} ${asset_policy_id}.${token_name1}" | awk '{print $2}')
+    --tx-out $(cat ${key_path}/${wallet_origin}.addr)+0+"${token_amount} ${asset_policy_id}.${token_name}" | awk '{print $2}')
 
 info "Minimum UTxO: ${min_amount}"
 
@@ -129,7 +129,7 @@ ${cardanocli} transaction build-raw \
     --fee 0 \
     ${tx_in} \
     --tx-out "$(cat ${key_path}/${wallet_origin}.addr)+${total_balance}+${all_native_assets}" \
-    --mint="${token_amount} ${asset_policy_id}.${token_name1}" \
+    --mint="${token_amount} ${asset_policy_id}.${token_name}" \
     --minting-script-file ${script_path}/${policy_name}.script \
     --metadata-json-file ${data_path}/mint-nft-metadata.json \
     --invalid-hereafter ${slot_number} \
@@ -152,7 +152,7 @@ ${cardanocli} transaction build-raw \
     --fee ${fee} \
     ${tx_in} \
     --tx-out "$(cat ${key_path}/${wallet_origin}.addr)+${final_balance}+${all_native_assets}" \
-    --mint="${token_amount} ${asset_policy_id}.${token_name1}" \
+    --mint="${token_amount} ${asset_policy_id}.${token_name}" \
     --minting-script-file ${script_path}/${policy_name}.script \
     --metadata-json-file ${data_path}/mint-nft-metadata.json \
     --invalid-hereafter ${slot_number} \

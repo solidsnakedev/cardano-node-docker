@@ -14,7 +14,7 @@ wallet_origin=${1}
 
 # Convert token name to Hex
 # Note that asset names are now output in hex format when querying UTxO entries.
-token_name1=$(echo -n ${2} | xxd -ps | tr -d '\n')
+token_name=$(echo -n ${2} | xxd -ps | tr -d '\n')
 
 # Get token amount to burn
 amount_to_burn=${3}
@@ -60,7 +60,7 @@ tx_cnt=${results[2]}
 native_assets=${results[3]}
 
 # Filter native assets
-readarray filter_asset_result <<< "$(filter_asset "${native_assets}" "${token_name1}")"
+readarray filter_asset_result <<< "$(filter_asset "${native_assets}" "${token_name}")"
 # Get filtered native asset balance
 native_asset_balance=${filter_asset_result[0]}
 # Get filtered native asset name
@@ -81,7 +81,7 @@ min_amount=$(${cardanocli} transaction calculate-min-required-utxo \
     --babbage-era \
     --protocol-params-file ${config_path}/protocol.json \
     --tx-out-reference-script-file ${script_path}/${policy_name}.script \
-    --tx-out $(cat ${key_path}/${wallet_origin}.addr)+0+"${amount_to_burn} ${asset_policy_id}.${token_name1}" | awk '{print $2}')
+    --tx-out $(cat ${key_path}/${wallet_origin}.addr)+0+"${amount_to_burn} ${asset_policy_id}.${token_name}" | awk '{print $2}')
 
 info "Minimum UTxO: ${min_amount}"
 
