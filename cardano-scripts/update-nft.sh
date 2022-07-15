@@ -13,11 +13,6 @@ if [[ "$#" -eq 0 || "$#" -ne 5 ]]; then error "Missing parameters" && info "Comm
 wallet_origin=${1}
 
 # Convert token name to Hex
-#Note: Since Cardano Node version 1.32.1
-#Asset Name Format Change. Note that asset names are now output in hex format when querying UTxO entries. 
-#Any user who is relying on asset names to be represented as ASCII text will need to change their tooling. 
-#As a temporary transitional solution, it is possible to use Cardano-cli version 1.31 with node version 1.32.1 if desired, or to continue to use node version 1.31.
-#This will not be possible following the next hard fork (which is expected in early 2022).
 token_name1=$(echo -n ${2} | xxd -ps | tr -d '\n')
 
 # Get token amount to burn
