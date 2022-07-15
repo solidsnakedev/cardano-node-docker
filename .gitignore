@@ -3,3 +3,4 @@ db
 ipc
 keys
 logs
+cardano-scripts/test*
