@@ -13,6 +13,7 @@ if [[ "$#" -eq 0 || "$#" -ne 5 ]]; then error "Missing parameters" && info "Comm
 wallet_origin=${1}
 
 # Convert token name to Hex
+# Note that asset names are now output in hex format when querying UTxO entries.
 token_name1=$(echo -n ${2} | xxd -ps | tr -d '\n')
 
 # Get token amount to burn

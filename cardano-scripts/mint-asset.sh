@@ -13,6 +13,7 @@ if [[ "$#" -eq 0 || "$#" -ne 4 ]]; then echo_red "Error: Missing parameters" && 
 wallet_origin=${1}
 
 # Convert token name to Hex
+# Note that asset names are now output in hex format when querying UTxO entries.
 token_name1=$(echo -n ${2} | xxd -ps | tr -d '\n')
 
 #token_name2=$(echo -n "SecondTesttoken" | xxd -ps | tr -d '\n')
