@@ -14,7 +14,7 @@ policy_name=${1}
 
 # Verify if policy vkey exists
 info "Checking if ${policy_name}.vkey exists"
-[[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${key_path}/${policy_name}.vkey exists" || { error "${key_path}/${policy_name}.vkey missing"; exit 1; }
+[[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${policy_name}.vkey exists" || { error "${key_path}/${policy_name}.vkey missing"; exit 1; }
 
 #--------- Run program ---------
 

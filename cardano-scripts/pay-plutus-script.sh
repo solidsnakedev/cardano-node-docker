@@ -17,7 +17,7 @@ datum_value=${4}
 
 # Verify if wallet skey exists
 info "Checking if ${wallet_origin}.skey exists"
-[[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${key_path}/${wallet_origin}.skey exists" || { error "${key_path}/${wallet_origin}.skey missing"; exit 1; }
+[[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${wallet_origin}.skey exists" || { error "${key_path}/${wallet_origin}.skey missing"; exit 1; }
 
 # Verify if plutus script exists
 info "Checking if ${script_name}.plutus exists"

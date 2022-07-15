@@ -13,7 +13,7 @@ json_file=${2}
 
 # Verify if wallet skey exists
 info "Checking if ${wallet_origin}.skey exists"
-[[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${key_path}/${wallet_origin}.skey exists" || { error "${key_path}/${wallet_origin}.skey missing"; exit 1; }
+[[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${wallet_origin}.skey exists" || { error "${key_path}/${wallet_origin}.skey missing"; exit 1; }
 
 # Verify if json file exists
 info "Checking if ${json_file}.json exists"
