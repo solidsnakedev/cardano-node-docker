@@ -24,6 +24,7 @@ echo_yellow "Info: Please run ${cardano_script_path}/gen-key.sh ${policy_name}\n
 # Create policy script
 info "Creating ${script_path}/${policy_name}.script"
 
+# Get slot number from policy script/
 slot_number=$(expr $(${cardanocli} query tip --testnet-magic ${TESTNET_MAGIC} | jq .slot?) + 10000)
 
 cat > ${script_path}/${policy_name}.script << EOF

@@ -22,6 +22,7 @@ amount_to_burn=${3}
 # Get token amount to burn
 policy_name=${4}
 
+# Get slot number from policy script/
 slot_number=${5}
 
 # Verify if wallet skey exists

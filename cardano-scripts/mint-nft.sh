@@ -23,7 +23,7 @@ token_amount=${3}
 # Get token policy name 
 policy_name=${4}
 
-# Get slot number from nft policy script 
+# Get slot number from policy script/
 slot_number=${5}
 
 # Get ipfs cid number 
