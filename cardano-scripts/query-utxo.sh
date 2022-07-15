@@ -4,7 +4,7 @@
 source common.sh
 
 #--------- Verification process  ---------
-if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Example -> query-utxo <wallet-name>"; exit 1; fi
+if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Usage: query-utxo <wallet-name>"; exit 1; fi
 
 wallet_origin=${1}
 
