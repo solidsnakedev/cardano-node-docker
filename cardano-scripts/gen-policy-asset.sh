@@ -8,13 +8,11 @@ source common.sh
 
 # Verify correct number of arguments
 if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Usage: gen-policy-asset.sh <policy-name> "; exit 1; fi
-
 # Get policy name
 policy_name=${1}
 
 # Verify if policy vkey exists
 [[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${policy_name}.vkey exists" || { error "${policy_name}.vkey missing"; exit 1; }
-
 
 #--------- Run program ---------
 

@@ -4,7 +4,7 @@ set -euo pipefail
 source common.sh
 
 #--------- Run program ---------
-info "The following program consumes the utxo from the native script"
+info "The following program will consume all the utxos from the native script"
 
 info "Select witnesses of the native script" && ls -1 ${key_path}/*.addr
 
@@ -13,10 +13,15 @@ read -p "Insert witness origin 2 address (example payment2) : " wallet_origin2
 
 read -p "Insert native script name (example multisig-policy) : " policy_name
 
+# Query utxos
 ${cardano_script_path}/query-utxo.sh ${policy_name}
-
-read -p "Insert tx-in : " txIn
-read -p "Insert tx-in id : " txInId
+# Get the total balance, and all utxos so they can be consumed when building the transaction
+info "Getting all utxos from ${policy_name}"
+readarray results <<< "$(generate_UTXO ${policy_name})"
+# Set total balance
+total_balance=${results[0]}
+# Set utxo inputs
+tx_in=${results[1]}
 
 info "Select the receiver of the utxo" && ls -1 ${key_path}/*.addr
 info "Note: utxo is consumed from native script and total amount is sent to change address"
@@ -25,7 +30,7 @@ read -p "Insert change/receiver address (example payment3) : " wallet_change
 info "Building transaction"
 ${cardanocli} transaction build \
     --babbage-era \
-    --tx-in "${txIn}#${txInId}" \
+    ${tx_in} \
     --tx-in-script-file ${script_path}/${policy_name}.script \
     --change-address $(cat ${key_path}/${wallet_change}.addr) \
     --witness-override 2 \

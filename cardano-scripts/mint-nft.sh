@@ -8,33 +8,25 @@ source common.sh
 
 # Verify correct number of arguments 
 if [[ "$#" -eq 0 || "$#" -ne 6 ]]; then error "Missing parameters" && info "Usage: mint-asset.sh <wallet-name> <token-name> <amount> <policy-name> <slot-number> <ipfs-cid> "; exit 1; fi
-
 # Get wallet name 
 wallet_origin=${1}
-
 # Convert token name to Hex 
 # Note that asset names are now output in hex format when querying UTxO entries.
 real_token_name=${2}
 token_name=$(echo -n ${real_token_name} | xxd -ps | tr -d '\n')
-
 # Get token amount to mint 
 token_amount=${3}
-
 # Get token policy name 
 policy_name=${4}
-
 # Get slot number from policy script/
 slot_number=${5}
-
 # Get ipfs cid number 
 ipfs_cid=${6}
 
 # Verify if wallet skey exists
 [[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${wallet_origin}.skey exists" || { error "${wallet_origin}.skey missing"; exit 1; }
-
 # Verify if policy vkey exists
 [[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${policy_name}.vkey exists" || { error "${policy_name}.vkey missing"; exit 1; }
-
 # Verify if policy script exists
 [[ -f ${script_path}/${policy_name}.script ]] && info "OK ${policy_name}.script exists" || { error "${policy_name}.script missing"; exit 1; }
 
@@ -88,7 +80,6 @@ EOF
 
 info "Printing NFT metadata json file"
 cat ${data_path}/mint-nft-metadata.json
-
 
 # Query utxos from wallet
 info "Queryng adddress: $(cat ${key_path}/${wallet_origin}.addr)"

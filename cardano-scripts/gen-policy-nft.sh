@@ -8,8 +8,7 @@ source common.sh
 
 # Verify correct number of arguments
 if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Usage: gen-policy-nft.sh <policy-name> "; exit 1; fi
-
-# Get token policy name
+# Get policy name
 policy_name=${1}
 
 # Verify if policy vkey exists

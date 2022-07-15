@@ -21,4 +21,4 @@ ${cardanocli} address build \
     --testnet-magic $TESTNET_MAGIC \
     --out-file ${key_path}/${script_name}.addr
 info "Address: $(cat ${key_path}/${script_name}.addr)"
-info "Native script address saved ${key_path}/${script_name}.addr)"
+info "Native script address saved ${key_path}/${script_name}.addr"

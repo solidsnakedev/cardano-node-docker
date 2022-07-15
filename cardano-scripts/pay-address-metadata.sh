@@ -3,9 +3,8 @@
 #--------- Import common paths and functions ---------
 source common.sh
 
-# Verify correct number of arguments  ---------
+# Verify correct number of arguments
 if [[ "$#" -eq 0 || "$#" -ne 2 ]]; then error "Missing parameters" && info "Usage: pay-address-metadata.sh <wallet-name> <json-file>"; exit 1; fi
-
 # Get wallet name
 wallet_origin=${1}
 # Get json file name
@@ -13,7 +12,6 @@ json_file=${2}
 
 # Verify if wallet skey exists
 [[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${wallet_origin}.skey exists" || { error "${wallet_origin}.skey missing"; exit 1; }
-
 # Verify if json file exists
 [[ -f ${data_path}/${json_file}.json ]] && info "OK ${json_file}.json exists" || { error "${json_file}.json missing"; exit 1; }
 
@@ -28,7 +26,6 @@ readarray results <<< "$(generate_UTXO ${wallet_origin})"
 total_balance=${results[0]}
 # Set utxo inputs
 tx_in=${results[1]}
-
 
 info "Building transaction \n  Note: wallet origin and change address are the same"
 ${cardanocli} transaction build \

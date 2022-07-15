@@ -8,7 +8,6 @@ source common.sh
 
 # Verify correct number of arguments
 if [[ "$#" -eq 0 || "$#" -ne 4 ]]; then error "Missing parameters" && info "Usage: burn-asset.sh <wallet-name> <token-name> <amount-to-burn> <policy-name> "; exit 1; fi
-
 # Get wallet name
 wallet_origin=${1}
 # Convert token name to Hex. Note that asset names are now output in hex format when querying UTxO entries.
@@ -20,13 +19,10 @@ policy_name=${4}
 
 # Verify if wallet skey exists
 [[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${wallet_origin}.skey exists" || { error "${wallet_origin}.skey missing"; exit 1; }
-
 # Verify if policy vkey exists
 [[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${policy_name}.vkey exists" || { error "${policy_name}.vkey missing"; exit 1; }
-
 # Verify if policy script exists
 [[ -f ${script_path}/${policy_name}.script ]] && info "OK ${policy_name}.script exists" || { error "${policy_name}.script missing"; exit 1; }
-
 
 #--------- Run program ---------
 

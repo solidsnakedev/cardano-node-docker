@@ -8,24 +8,18 @@ source common.sh
 
 # Verify correct number of arguments
 if [[ "$#" -eq 0 || "$#" -ne 4 ]]; then error "Missing parameters" && info "Usage: mint-asset.sh <wallet-name> <token-name> <amount> <policy-name>"; exit 1; fi
-
 # Get wallet name
 wallet_origin=${1}
-
 # Convert token name to Hex
 # Note that asset names are now output in hex format when querying UTxO entries.
 token_name=$(echo -n ${2} | xxd -ps | tr -d '\n')
-
-#token_name2=$(echo -n "SecondTesttoken" | xxd -ps | tr -d '\n')
-
 # Get token amount to mint
 token_amount=${3}
-
+# Get policy name
 policy_name=${4}
 
 # Verify if policy vkey exists
 [[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${policy_name}.vkey exists" || { error "${policy_name}.vkey missing"; exit 1; }
-
 # Verify if policy script exists
 [[ -f ${script_path}/${policy_name}.script ]] && info "OK ${policy_name}.script exists" || { error "${policy_name}.script missing"; exit 1; }
 

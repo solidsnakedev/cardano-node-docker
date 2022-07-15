@@ -22,10 +22,8 @@ slot_number=${5}
 
 # Verify if wallet skey exists
 [[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${wallet_origin}.skey exists" || { error "${wallet_origin}.skey missing"; exit 1; }
-
 # Verify if policy vkey exists
 [[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${policy_name}.vkey exists" || { error "${policy_name}.vkey missing"; exit 1; }
-
 # Verify if policy script exists
 [[ -f ${script_path}/${policy_name}.script ]] && info "OK ${policy_name}.script exists" || { error "${policy_name}.script missing"; exit 1; }
 
@@ -69,14 +67,13 @@ all_native_assets="${remainder_assets} + ${native_asset_change} ${native_asset_n
 info ${all_native_assets}
 fi
 
-min_amount=$(${cardanocli} transaction calculate-min-required-utxo \
-    --babbage-era \
-    --protocol-params-file ${config_path}/protocol.json \
-    --tx-out-reference-script-file ${script_path}/${policy_name}.script \
-    --tx-out $(cat ${key_path}/${wallet_origin}.addr)+0+"${amount_to_burn} ${asset_policy_id}.${token_name}" | awk '{print $2}')
-
-info "Minimum UTxO: ${min_amount}"
-
+#min_amount=$(${cardanocli} transaction calculate-min-required-utxo \
+#    --babbage-era \
+#    --protocol-params-file ${config_path}/protocol.json \
+#    --tx-out-reference-script-file ${script_path}/${policy_name}.script \
+#    --tx-out $(cat ${key_path}/${wallet_origin}.addr)+0+"${amount_to_burn} ${asset_policy_id}.${token_name}" | awk '{print $2}')
+#
+#info "Minimum UTxO: ${min_amount}"
 
 info "Building Raw transaction"
 ${cardanocli} transaction build-raw \

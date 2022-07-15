@@ -4,7 +4,7 @@ set -euo pipefail
 #--------- Import common paths and functions ---------
 source common.sh
 
-# Verify correct number of arguments  ---------
+# Verify correct number of arguments
 if [[ "$#" -eq 0 || "$#" -ne 4 ]]; then error "Missing parameters" && info "Usage: pay-plutus-script.sh <wallet-origin> <script-name> <amount> <datum> "; exit 1; fi
 # Get wallet name
 wallet_origin=${1}
@@ -17,7 +17,6 @@ datum_value=${4}
 
 # Verify if wallet skey exists
 [[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${wallet_origin}.skey exists" || { error "${wallet_origin}.skey missing"; exit 1; }
-
 # Verify if plutus script exists
 [[ -f ${script_path}/${script_name}.plutus ]] && info "OK ${script_name}.plutus exists" || { error "${script_name}.plutus missing"; exit 1; }
 

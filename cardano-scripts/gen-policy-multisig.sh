@@ -4,13 +4,10 @@ set -o pipefail
 #--------- Import common paths and functions ---------
 source common.sh
 
-info "This policy requires 2 witnesses in order to spend the utxo from the native script"
-
 #--------- Verification  ---------
 
 # Verify correct number of arguments
 if [[ "$#" -eq 0 || "$#" -ne 3 ]]; then error "Missing parameters" && info "Usage: gen-policy-multisig.sh <wallet-witness-1> <wallet-witness-2> <policy-name>"; exit 1; fi
-
 # Get wallet name
 wallet_origin1=${1}
 wallet_origin2=${2}
@@ -25,7 +22,7 @@ policy_name=${3}
 
 # Create policy script
 
-info "Creating ${script_path}/${policy_name}.script from witness 1:${wallet_origin1} and witness 2: ${wallet_origin2}"
+info "Creating ${script_path}/${policy_name}.script from 2 witnesses ${wallet_origin1} and ${wallet_origin2}"
 
 cat > ${script_path}/${policy_name}.script << EOF
 {
@@ -43,5 +40,6 @@ cat > ${script_path}/${policy_name}.script << EOF
   ]
 }
 EOF
-
 cat ${script_path}/${policy_name}.script
+
+info "This policy requires 2 witnesses in order to spend the utxo from the native script"

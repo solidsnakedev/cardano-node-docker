@@ -10,16 +10,15 @@ info "Calculating Datum Hash"
 datum_hash=$(${cardanocli} transaction hash-script-data --script-data-value ${datum_value})
 info "Datum Hash : ${datum_hash}"
 
-read -p "Insert wallet script address (example AlwaysSucceeds) : " wallet_script
+read -p "Insert plutus script name (example AlwaysSucceeds) : " script_name
 info "Querying script utxo and filter by Datum Hash"
-${cardano_script_path}/query-utxo.sh ${wallet_script} | grep ${datum_hash}
+${cardano_script_path}/query-utxo.sh ${script_name} | grep ${datum_hash}
 if [[ $? -ne 0 ]]; then error "Could not find Datum Hash in script utxos!. Insert a different Datum value"; exit 1; fi
 
 read -p "Insert TxHash from script utxo: " txIn_script
 read -p "Insert TxIx id from script utxo: " txInId_script
 read -p "Insert amount to send from script utxo (example 500 ADA = 500,000,000 lovelace) : " amount
 ls -1 ${script_path}/*.plutus
-read -p "Insert plutus file name (example AlwaysSucceeds) : " script_name
 read -p "Insert redeemer value (example 42) : " redeemer_value
 
 info "Select a wallet to be used as tx-in and collateral"
