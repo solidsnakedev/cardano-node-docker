@@ -12,11 +12,9 @@ wallet_origin=${1}
 json_file=${2}
 
 # Verify if wallet skey exists
-info "Checking if ${wallet_origin}.skey exists"
 [[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${wallet_origin}.skey exists" || { error "${wallet_origin}.skey missing"; exit 1; }
 
 # Verify if json file exists
-info "Checking if ${json_file}.json exists"
 [[ -f ${data_path}/${json_file}.json ]] && info "OK ${data_path}/${json_file}.json exists" || { error "${data_path}/${json_file}.json missing"; exit 1; }
 
 #--------- Run program ---------

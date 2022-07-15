@@ -14,7 +14,6 @@ wallet_dest=${2}
 amount=${3}
 
 # Verify if wallet skey exists
-info "Checking if ${wallet_origin}.skey exists"
 [[ -f ${key_path}/${wallet_origin}.skey ]] && info "OK ${wallet_origin}.skey exists" || { error "${wallet_origin}.skey missing"; exit 1; }
 
 #--------- Run program

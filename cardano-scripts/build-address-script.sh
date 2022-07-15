@@ -11,7 +11,6 @@ if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Comm
 script_name=${1}
 
 # Verify if plutus script exists
-info "Checking if ${script_name}.plutus exists"
 [[ -f ${script_path}/${script_name}.plutus ]] && info "OK ${script_name}.plutus exists" || { error "${script_name}.plutus missing"; exit 1; }
 
 

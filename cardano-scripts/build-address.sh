@@ -13,11 +13,9 @@ wallet_name=${1}
 stake_name=${2}
 
 # Verify if wallet vkey exists
-info "Checking if ${wallet_name}.vkey exists"
 [[ -f ${key_path}/${wallet_name}.vkey ]] && info "OK ${wallet_name}.vkey exists" || { error "${wallet_name}.vkey missing"; exit 1; }
 
 # Verify if policy vkey exists
-info "Checking if ${stake_name}.vkey exists"
 [[ -f ${key_path}/${stake_name}.vkey ]] && info "OK ${stake_name}.vkey exists" || { error "${stake_name}.vkey missing"; exit 1; }
 
 

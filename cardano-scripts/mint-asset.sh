@@ -24,11 +24,9 @@ token_amount=${3}
 policy_name=${4}
 
 # Verify if policy vkey exists
-info "Checking if ${policy_name}.vkey exists"
 [[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${policy_name}.vkey exists" || { error "${policy_name}.vkey missing"; exit 1; }
 
 # Verify if policy script exists
-info "Checking if ${policy_name}.script exists"
 [[ -f ${script_path}/${policy_name}.script ]] && info "OK ${policy_name}.script exists" || { error "${policy_name}.script missing"; exit 1; }
 
 #--------- Run program ---------

@@ -13,7 +13,6 @@ if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then error "Missing parameters" && info "Comm
 policy_name=${1}
 
 # Verify if policy vkey exists
-info "Checking if ${policy_name}.vkey exists"
 [[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${policy_name}.vkey exists" || { error "${policy_name}.vkey missing"; exit 1; }
 
 
