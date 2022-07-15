@@ -5,7 +5,7 @@ set -euo pipefail
 source common.sh
 
 #--------- Run program ---------
-echo_green "\n- List of addresses" && ls -1 ${key_path}/*.addr
+info "List of addresses" && ls -1 ${key_path}/*.addr
 read -p "Insert origin address (example payment1) : " origin
 ${cardano_script_path}/query-utxo.sh ${origin}
 
@@ -28,18 +28,18 @@ while read -r utxo; do
     idx=$(awk '{ print $2 }' <<< "${utxo}")
     utxo_balance=$(awk '{ print $3 }' <<< "${utxo}")
     total_balance=$((${total_balance}+${utxo_balance}))
-    echo_green "TxHash: ${in_addr}#${idx}"
-    echo_green "Lovelace: ${utxo_balance}"
+    info "TxHash: ${in_addr}#${idx}"
+    info "Lovelace: ${utxo_balance}"
     tx_in="${tx_in} --tx-in ${in_addr}#${idx}"
-    echo_green ${tx_in}
+    info ${tx_in}
 done < ${data_path}/balance.out
 txcnt=$(cat ${data_path}/balance.out | wc -l)
-echo_green "Total ADA balance: ${total_balance}"
-echo_green "Number of UTXOs: ${txcnt}"
+info "Total ADA balance: ${total_balance}"
+info "Number of UTXOs: ${txcnt}"
 echo ${tx_in}
 
 #--------- Build transaction ---------
-echo_green "- Building transaction"
+info "Building transaction"
 ${cardanocli} transaction build \
     --babbage-era \
     ${tx_in} \
@@ -47,14 +47,14 @@ ${cardanocli} transaction build \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/tx.build
 
-echo_green "- Signing transaction"
+info "Signing transaction"
 ${cardanocli} transaction sign \
     --tx-body-file ${key_path}/tx.build \
     --signing-key-file ${key_path}/${origin}.skey \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/tx.signed
 
-echo_green "- Submiting transaction"
+info "Submiting transaction"
 ${cardanocli} transaction submit \
     --tx-file ${key_path}/tx.signed \
     --testnet-magic ${TESTNET_MAGIC}

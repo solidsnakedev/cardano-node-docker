@@ -11,7 +11,7 @@ if [[ "$#" -eq 0 || "$#" -ne 1 ]]; then echo_red "Error: Missing parameters" && 
 policy_name=${1}
 
 #--------- Verify if policy vkey exists ---------
-echo_green "- Verification keys found : "
+info "Verification keys found : "
 ls -1 ${key_path}/${policy_name}.vkey 2> /dev/null
 if [[ $? -ne 0 ]]; then 
 echo_red "Error: Verification key does not exists!"
@@ -20,7 +20,7 @@ echo_yellow "Info: Please run ${cardano_script_path}/gen-key.sh ${policy_name}\n
 #--------- Run program ---------
 
 #--------- Create policy script ---------
-echo_green "- Creating ${script_path}/${policy_name}.script"
+info "Creating ${script_path}/${policy_name}.script"
 
 cat > ${script_path}/${policy_name}.script << EOF
 {

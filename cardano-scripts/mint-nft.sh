@@ -43,6 +43,7 @@ info "Checking if ${policy_name}.vkey exists"
 info "Checking if ${policy_name}.script exists"
 [[ -f ${script_path}/${policy_name}.script ]] && info "OK ${script_path}/${policy_name}.script exists" || { error "${script_path}/${policy_name}.script missing"; exit 1; }
 
+#--------- Run program ---------
 
 info "Printing policy script file"
 cat ${script_path}/${policy_name}.script

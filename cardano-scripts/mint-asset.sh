@@ -26,29 +26,25 @@ token_amount=${3}
 policy_name=${4}
 
 #--------- Verify if policy vkey exists ---------
-echo_green "- Verification keys found : "
-ls -1 ${key_path}/${policy_name}.vkey 2> /dev/null
-if [[ $? -ne 0 ]]; then 
-echo_red "Error: Verification key does not exists!"
-echo_yellow "Info: Please run ${cardano_script_path}/gen-key.sh ${policy_name}\n"; exit 1; fi
+info "Checking if ${policy_name}.vkey exists"
+[[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${key_path}/${policy_name}.vkey exists" || { error "${key_path}/${policy_name}.vkey missing"; exit 1; }
 
 #--------- Verify if policy script exists ---------
-echo_green "- Policy verification : "
-ls -1 ${script_path}/${policy_name}.script 2> /dev/null
-if [[ $? -ne 0 ]]; then 
-echo_red "Error: Policy script does not exists!"
-echo_yellow "Info: Please run gen-policy-asset.sh ${policy_name}\n"; exit 1; fi
+info "Checking if ${policy_name}.script exists"
+[[ -f ${script_path}/${policy_name}.script ]] && info "OK ${script_path}/${policy_name}.script exists" || { error "${script_path}/${policy_name}.script missing"; exit 1; }
+
+#--------- Run program ---------
 
 #--------- Compute policy id ---------
 asset_policy_id=$(${cardanocli} transaction policyid --script-file ${script_path}/${policy_name}.script)
-echo_green "- Policy ID: ${asset_policy_id}"
+info "Policy ID: ${asset_policy_id}"
 
 #--------- Query utxos from wallet ---------
-echo_green "- Queryng adddress: $(cat ${key_path}/${wallet_origin}.addr)"
+info "Queryng adddress: $(cat ${key_path}/${wallet_origin}.addr)"
 ${cardano_script_path}/query-utxo.sh ${wallet_origin}
 
 #--------- Get the total balance, and all utxos so they can be consumed when building the transaction ---------
-echo_green "- Getting all UTxO from ${wallet_origin}"
+info "Getting all UTxO from ${wallet_origin}"
 readarray results <<< "$(generate_UTXO "${wallet_origin}")"
 
 #--------- Get total balance ---------
@@ -71,9 +67,9 @@ min_amount=$(${cardanocli} transaction calculate-min-required-utxo \
     --tx-out-reference-script-file ${script_path}/${policy_name}.script \
     --tx-out $(cat ${key_path}/${wallet_origin}.addr)+0+"${token_amount} ${asset_policy_id}.${token_name1}" | awk '{print $2}')
 
-echo_green "- Minimum UTxO: ${min_amount}"
+info "Minimum UTxO: ${min_amount}"
 
-echo_green "- Building Raw transaction"
+info "Building Raw transaction"
 ${cardanocli} transaction build-raw \
     --babbage-era \
     --fee 0 \
@@ -91,10 +87,10 @@ fee=$(${cardanocli} transaction calculate-min-fee \
     --testnet-magic ${TESTNET_MAGIC} \
     --protocol-params-file ${config_path}/protocol.json | cut -d " " -f1)
 
-echo_green "- Calc fee: ${fee}"
+info "Calc fee: ${fee}"
 final_balance=$((total_balance - fee))
 
-echo_green "- Building transaction"
+info "Building transaction"
 ${cardanocli} transaction build-raw \
     --babbage-era \
     --fee ${fee} \
@@ -104,7 +100,7 @@ ${cardanocli} transaction build-raw \
     --minting-script-file ${script_path}/${policy_name}.script \
     --out-file ${key_path}/${policy_name}-tx.build
 
-echo_green "- Signing transaction"
+info "Signing transaction"
 ${cardanocli} transaction sign \
     --tx-body-file ${key_path}/${policy_name}-tx.build \
     --signing-key-file ${key_path}/${wallet_origin}.skey \
@@ -112,9 +108,9 @@ ${cardanocli} transaction sign \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/${policy_name}-tx.signed
 
-echo_green "- Submiting transaction"
+info "Submiting transaction"
 ${cardanocli} transaction submit \
     --tx-file ${key_path}/${policy_name}-tx.signed \
     --testnet-magic ${TESTNET_MAGIC}
 
-echo_green "- Wait for ~20 seconds so the transaction is in the blockchain."
+info "Wait for ~20 seconds so the transaction is in the blockchain."

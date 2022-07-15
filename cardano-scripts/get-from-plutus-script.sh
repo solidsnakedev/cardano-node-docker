@@ -6,12 +6,12 @@ source common.sh
 
 #--------- Run program ---------
 read -p "Insert Datum value (example 6666) : " datum_value
-echo_green "- Calculating Datum Hash"
+info "Calculating Datum Hash"
 datum_hash=$(${cardanocli} transaction hash-script-data --script-data-value ${datum_value})
-echo_green "- Datum Hash : ${datum_hash}"
+info "Datum Hash : ${datum_hash}"
 
 read -p "Insert wallet script address (example AlwaysSucceeds) : " wallet_script
-echo_green "- Querying script utxo and filter by Datum Hash"
+info "Querying script utxo and filter by Datum Hash"
 ${cardano_script_path}/query-utxo.sh ${wallet_script} | grep ${datum_hash}
 if [[ $? -ne 0 ]]; then echo_red "Error: Could not find Datum Hash in script utxos!. Insert a different Datum value"; exit 1; fi
 
@@ -22,7 +22,7 @@ ls -1 ${script_path}/*.plutus
 read -p "Insert plutus file name (example AlwaysSucceeds) : " script_file
 read -p "Insert redeemer value (example 42) : " redeemer_value
 
-echo_green "\n- Select a wallet to be used as tx-in and collateral"
+info "Select a wallet to be used as tx-in and collateral"
 ls -1 ${key_path}/*.addr
 read -p "Insert wallet origin address (example payment1) : " wallet_origin
 ${cardano_script_path}/query-utxo.sh ${wallet_origin}
@@ -32,7 +32,7 @@ read -p "Insert TxIx id : " txInId_origin
 read -p "Insert wallet destination address to pay (example payment2) : " wallet_dest
 
 
-echo_green "- Building transaction"
+info "Building transaction"
 ${cardanocli} transaction build \
     --babbage-era \
     --testnet-magic ${TESTNET_MAGIC} \
@@ -48,16 +48,16 @@ ${cardanocli} transaction build \
     --protocol-params-file ${config_path}/protocol.json \
     --out-file ${key_path}/plutus-tx.build
 
-echo_green "- Signing transaction"
+info "Signing transaction"
 ${cardanocli} transaction sign \
     --tx-body-file ${key_path}/plutus-tx.build \
     --signing-key-file ${key_path}/${wallet_origin}.skey \
     --testnet-magic ${TESTNET_MAGIC} \
     --out-file ${key_path}/plutus-tx.signed
 
-echo_green "- Submiting transaction"
+info "Submiting transaction"
 ${cardanocli} transaction submit \
     --tx-file ${key_path}/plutus-tx.signed \
     --testnet-magic ${TESTNET_MAGIC}
 
-echo_green "- Wait for ~20 seconds so the transaction is in the blockchain."
+info "Wait for ~20 seconds so the transaction is in the blockchain."

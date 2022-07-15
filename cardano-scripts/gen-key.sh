@@ -13,7 +13,7 @@ ${cardanocli} address key-gen \
     --verification-key-file ${key_path}/${payment}.vkey \
     --signing-key-file ${key_path}/${payment}.skey
 
-echo_green "- Keys saved in ${key_path}/${payment}.vkey and ${key_path}/${payment}.skey "
+info "Keys saved in ${key_path}/${payment}.vkey and ${key_path}/${payment}.skey "
 
 if [[ -z ${2} ]]; then exit 0; fi
 stake=${2}
@@ -22,4 +22,4 @@ ${cardanocli} stake-address key-gen \
     --verification-key-file ${key_path}/${stake}.vkey \
     --signing-key-file ${key_path}/${stake}.skey
 
-echo_green "- Keys saved in ${key_path}/${stake}.vkey and ${key_path}/${stake}.skey"
+info "Keys saved in ${key_path}/${stake}.vkey and ${key_path}/${stake}.skey"
