@@ -22,6 +22,8 @@ policy_name=${4}
 [[ -f ${key_path}/${policy_name}.vkey ]] && info "OK ${policy_name}.vkey exists" || { error "${policy_name}.vkey missing"; exit 1; }
 # Verify if policy script exists
 [[ -f ${script_path}/${policy_name}.script ]] && info "OK ${policy_name}.script exists" || { error "${policy_name}.script missing"; exit 1; }
+# Verify if protocol exists
+[[ -f ${config_path}/protocol.json ]] && info "OK protocol.json exists" || { error "protocol.json missing"; exit 1; }
 
 #--------- Run program ---------
 

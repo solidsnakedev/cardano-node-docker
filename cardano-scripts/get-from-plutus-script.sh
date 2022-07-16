@@ -4,6 +4,9 @@ set -uo pipefail
 #--------- Import common paths and functions ---------
 source common.sh
 
+# Verify if protocol exists
+[[ -f ${config_path}/protocol.json ]] && info "OK protocol.json exists" || { error "protocol.json missing"; exit 1; }
+
 #--------- Run program ---------
 read -p "Insert Datum value (example 6666) : " datum_value
 info "Calculating Datum Hash"
