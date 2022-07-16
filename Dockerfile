@@ -5,9 +5,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && \
     apt-get install automake build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ tmux git jq wget libncursesw5 libtool autoconf liblmdb-dev curl -y
 
-# Trick to disable cache when a new cardano-node version is found
-ADD https://api.github.com/repos/input-output-hk/cardano-node/releases/latest latest_commit
-
 # Create src folder for installations
 RUN mkdir src
 
