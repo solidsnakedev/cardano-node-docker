@@ -44,9 +44,11 @@ ENV PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 # Update Cabal
 RUN cabal update
 
+ARG TAG=$(curl -s https://api.github.com/repos/input-output-hk/cardano-node/releases/latest | jq -r .tag_name)
 # Clone Cardano Node and checkout to latest version
-RUN export TAG=$(curl -s https://api.github.com/repos/input-output-hk/cardano-node/releases/latest | jq -r .tag_name) && \
-    echo $TAG && \
+
+#RUN export TAG=$(curl -s https://api.github.com/repos/input-output-hk/cardano-node/releases/latest | jq -r .tag_name) && \
+RUN echo $TAG && \
     cd src && \
     git clone https://github.com/input-output-hk/cardano-node.git && \
     cd cardano-node && \
