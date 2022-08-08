@@ -1,0 +1,10 @@
+services:
+  cardano-node-container:
+    build: .
+    image: cardano-node
+    container_name: cardano-node-container
+    volumes:
+      - ./db/:/node/db
+      - ./logs/:/node/logs
+      - ./ipc/:/node/ipc
+      - ./keys/:/node/keys
