@@ -13,10 +13,15 @@ chmod +x docker-*
 ```
 
 ## 3. Building image
-You can build the image using the script `docker-build-image.sh`, the image size is ~800 MB
+You can build the image using docker compose, the image size is ~800 MB
 
 ```
-./docker-build-image.sh
+DOCKER_BUILDKIT=1 docker compose build
+```
+or 
+
+```
+DOCKER_BUILDKIT=1 docker compose build --build-arg TAG=1.35.2
 ```
 
 ## 4. Running container :smiley:
@@ -25,7 +30,7 @@ The `Dockerfile` has an `CMD` to run the cardano-node as soon as you run the con
 * Run container in detached mode
 
 ```
-./docker-run-container.sh
+docker compose up -d
 ```
 
 ## 5. Getting status of cardano-node from host
@@ -111,14 +116,8 @@ root@ee67eac03bec:/# exit
 exit
 ```
 
-## 8. Removing containers
-You can remove all the containers with the below script, and this will only remove containers with exited status
+## 8. Stopping the container
+You can stop the container by running the following command
 ```
-./docker-rm-containers.sh
-```
-
-## 9. Removing images
-You can remove all the images with the below script, and this will only remove the untagged images
-```
-./docker-rm-images.sh
+docker compose down
 ```
