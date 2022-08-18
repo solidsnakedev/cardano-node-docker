@@ -44,17 +44,17 @@ ENV PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 # Update Cabal
 RUN cabal update
 
-ARG TAG=$(curl -s https://api.github.com/repos/input-output-hk/cardano-node/releases/latest | jq -r .tag_name)
-# Clone Cardano Node and checkout to latest version
 
-#RUN export TAG=$(curl -s https://api.github.com/repos/input-output-hk/cardano-node/releases/latest | jq -r .tag_name) && \
-RUN echo $TAG && \
+
+# Clone Cardano Node and checkout to latest version
+RUN TAG=$(curl -s https://api.github.com/repos/input-output-hk/cardano-node/releases/latest | jq -r .tag_name) && \
+    echo $TAG && \
     cd src && \
     git clone https://github.com/input-output-hk/cardano-node.git && \
     cd cardano-node && \
     git fetch --all --recurse-submodules --tags && \
     git tag && \
-    git checkout tags/$TAG
+    git checkout tags/${TAG}
 
 # Set config for cabal project
 RUN echo "package cardano-crypto-praos" >>  /src/cardano-node/cabal.project.local && \
@@ -101,17 +101,17 @@ RUN cd src && \
 # Delete src folder
 RUN rm -r /src
 
-# Get latest config files from IOHK github api
+# Get latest config files from https://book.world.dev.cardano.org/environments.html
 RUN wget -P /node/configuration \
-    https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/testnet-config.json \
-    https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/testnet-byron-genesis.json \
-    https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/testnet-shelley-genesis.json \
-    https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/testnet-alonzo-genesis.json \
-    https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/testnet-topology.json
+    https://book.world.dev.cardano.org/environments/preprod/config.json \
+    https://book.world.dev.cardano.org/environments/preprod/topology.json \
+    https://book.world.dev.cardano.org/environments/preprod/byron-genesis.json \
+    https://book.world.dev.cardano.org/environments/preprod/shelley-genesis.json \
+    https://book.world.dev.cardano.org/environments/preprod/alonzo-genesis.json
 
 # Change config to save them in /root/node/log/node.log file instead of stdout
-RUN sed -i 's/StdoutSK/FileSK/' /node/configuration/testnet-config.json && \
-    sed -i 's/stdout/\/node\/logs\/node.log/' /node/configuration/testnet-config.json
+RUN sed -i 's/StdoutSK/FileSK/' /node/configuration/config.json && \
+    sed -i 's/stdout/\/node\/logs\/node.log/' /node/configuration/config.json
 
 # Update libsodium PATH
 ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -120,8 +120,8 @@ ENV PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 # Set node socket evironment for cardano-cli
 ENV CARDANO_NODE_SOCKET_PATH="/node/ipc/node.socket"
 
-# Set testnet magic number
-ENV TESTNET_MAGIC=1097911063
+# Set testnet magic number for Pre-Production Testnet
+ENV TESTNET_MAGIC=1
 
 # Create keys, ipc, data, scripts, logs folders
 RUN mkdir -p /node/keys /node/ipc /node/data /node/scripts /node/logs

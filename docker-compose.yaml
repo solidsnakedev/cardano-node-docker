@@ -2,9 +2,10 @@ services:
   cardano-node-container:
     build: .
     image: cardano-node
-    container_name: cardano-node-container
+    container_name: cardano-node-pre-production
     volumes:
       - ./db/:/node/db
       - ./logs/:/node/logs
       - ./ipc/:/node/ipc
       - ./keys/:/node/keys
+      - ./scripts:/node/scripts
